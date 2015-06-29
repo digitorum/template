@@ -1,0 +1,8 @@
+Text before
+<if ( ( <var[x]> ) && ( 111 gt 11 ) ) || 1 == 2 >
+	x-statement
+	<if <var[y]>>
+		y-statement
+	</if>
+</if >
+Text after

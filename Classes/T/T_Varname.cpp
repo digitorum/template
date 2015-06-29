@@ -6,12 +6,14 @@ protected:
 
 	// имя переменной
 	string varname;
+	E_Methods* methods;
 
 public:
 
 	// конструктор, на вход приминмаем имя переменной
-	T_Varname(string str) {
-		varname = str;
+	T_Varname(string str, E_Methods* methods) {
+		this->varname = str;
+		this->methods = methods;
 	}
 
 	// виртуальный деструктор
@@ -21,7 +23,16 @@ public:
 
 	// текстовое представление ноды
 	virtual string Dump() {
-		return "$" + varname;
+		string result = "";
+		int i = 0;
+
+		result = "$" + this->varname;
+		if(this->methods->size()) {
+			for(i=0; i<this->methods->size(); i++) {
+				result = this->methods->at(i)->getName() + "( " + result + this->methods->at(i)->getParameters()->Dump() + " ) ";
+			}
+		}
+		return result;
 	}
 
 };

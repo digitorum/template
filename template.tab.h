@@ -40,12 +40,12 @@
      T_TEXT = 258,
      T_NUMERIC = 259,
      T_VAR_NAME = 260,
-     T_METHOD = 261,
-     T_END = 262,
+     T_METHOD_NAME = 261,
+     T_STRING = 262,
      T_VAR_OPEN = 263,
-     T_TAG_CLOSE = 264,
-     T_IF_OPEN = 265,
-     T_IF_CLOSE = 266,
+     T_IF_OPEN = 264,
+     T_IF_CLOSE = 265,
+     T_TAG_CLOSE = 266,
      T_SBRACKET_OPEN = 267,
      T_SBRACKET_CLOSE = 268,
      T_RBRACKET_OPEN = 269,
@@ -57,7 +57,10 @@
      T_GT = 275,
      T_GE = 276,
      T_LT = 277,
-     T_LE = 278
+     T_LE = 278,
+     T_DOT = 279,
+     T_COMMA = 280,
+     T_END = 281
    };
 #endif
 
@@ -68,15 +71,16 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 27 "template.y"
+#line 31 "template.y"
 
 	char *sval;
 	Token *tpointer;
+	E_Methods *mpointer;
 
 
 
 /* Line 2068 of yacc.c  */
-#line 80 "template.tab.h"
+#line 84 "template.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
