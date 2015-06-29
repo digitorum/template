@@ -1,0 +1,8 @@
+Numeric 1 000 000.50 
+if <if ( ( <var[x]> ) && ( 111 gt 11 ) ) || 1 == 2 >
+	x-statement
+	<if <var[y]>>
+		y-statement
+	</if>
+</if >
+String... 

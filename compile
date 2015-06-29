@@ -1,0 +1,4 @@
+bison -d -v -t template.y
+flex template.l
+g++ -std=c++14 template.tab.c lex.yy.c -o template -lfl -lboost_filesystem -lboost_system
+./template < Test/text
