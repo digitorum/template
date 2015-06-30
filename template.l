@@ -17,7 +17,11 @@ S_List states;
 std::string buffer;
 
 extern "C" int yylex();
-	
+
+void ___dump(char *src) {
+	std::cout << src << std::endl;
+}
+
 %}
 
 %s TEXT
@@ -28,6 +32,7 @@ extern "C" int yylex();
 %s STRING_SQ
 %s STRING_DQ
 %s SCRIPT
+%s SET
 
 WS		[ \t]+
 WSN		[ \t\r\s]+
@@ -43,6 +48,11 @@ WSN		[ \t\r\s]+
 						}
 	\<\/if{WS}*>		{
 							return T_IF_CLOSE;
+						}
+	\<set{WS}+			{
+							states.push(YY_START);
+							BEGIN(SET);
+							return T_SET_OPEN;
 						}
 	\n					{
 							yylval.sval = strdup(yytext);
@@ -201,7 +211,55 @@ WSN		[ \t\r\s]+
 	le					{
 							return T_LE;
 						}
+	\+					{
+							return T_PLUS;
+						}
+	\-					{
+							return T_MINUS;
+						}
+	\*					{
+							return T_MULTIPLY;
+						}
+	\/					{
+							return T_DIVISION;
+						}
+	\%					{
+							return T_MODULO;
+						}
+	\^					{
+							return T_POW;
+						}
+}
+
+
+
+
+<SCRIPT,SET>{
+
 	{WSN}*				;
+
+}
+
+
+
+
+<VAR,SET>{
+	
+	([a-zA-Z_]+(->)*)+	{
+							yylval.sval = strdup(yytext);
+							return T_VAR_NAME;
+						}
+}
+
+
+
+
+<SET>{
+	=					{
+							// SET=SCRIPT, стэк не наполняем, просто изменяем состояние
+							BEGIN(SCRIPT);
+							return T_ASSIGNMENT;
+						}
 }
 
 
@@ -219,10 +277,6 @@ WSN		[ \t\r\s]+
 							states.push(YY_START);
 							BEGIN(METHODS);
 							yyless(0);
-						}
-	([a-zA-Z_]+(->)*)+	{
-							yylval.sval = strdup(yytext);
-							return T_VAR_NAME;
 						}
 }
 

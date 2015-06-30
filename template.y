@@ -15,6 +15,7 @@
 #include "Classes/T/T_If.cpp"
 #include "Classes/T/T_Varname.cpp"
 #include "Classes/T/T_Const.cpp"
+#include "Classes/T/T_Set.cpp"
 
 
 
@@ -38,14 +39,16 @@ std::list<E_Parameters*> parameters;
 %token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING
 %token T_VAR_OPEN T_CONST_OPEN
 %token T_IF_OPEN T_IF_CLOSE
+%token T_SET_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
 %token T_AND T_OR
-%token T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE
+%token T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE T_ASSIGNMENT
+%token T_PLUS T_MINUS T_MULTIPLY T_DIVISION T_MODULO T_POW
 %token T_DOT T_COMMA
 %token T_END
 
-%left T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE T_AND T_OR
+%left T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE T_AND T_OR T_ASSIGNMENT T_PLUS T_MINUS T_MULTIPLY T_DIVISION T_MODULO T_POW
 
 %type <tpointer> E_EXPR E_IF E_SCRIPT E_ENTITY
 %type <mpointer> E_METHODS
@@ -73,6 +76,9 @@ E_SCRIPT:
 									 													}
 	| E_EXPR																			{
 																							$$ = $1;
+																						}
+	| T_SET_OPEN T_VAR_NAME T_ASSIGNMENT E_EXPR T_TAG_CLOSE								{
+																							$$ = new T_Set(new T_Varname($2, new E_Methods()), $4);
 																						}
 	| T_TEXT																			{
 																							$$ = new T_Text($1);
@@ -117,6 +123,24 @@ E_EXPR:
 																						}
 	| E_EXPR T_LT E_EXPR																{
 																							$$ = new E_Expr($1, new T_Text("<"), $3);
+																						}
+	| E_EXPR T_PLUS E_EXPR																{
+																							$$ = new E_Expr($1, new T_Text("+"), $3);
+																						}
+	| E_EXPR T_MINUS E_EXPR																{
+																							$$ = new E_Expr($1, new T_Text("-"), $3);
+																						}
+	| E_EXPR T_MULTIPLY E_EXPR															{
+																							$$ = new E_Expr($1, new T_Text("*"), $3);
+																						}
+	| E_EXPR T_DIVISION E_EXPR															{
+																							$$ = new E_Expr($1, new T_Text("/"), $3);
+																						}
+	| E_EXPR T_MODULO E_EXPR															{
+																							$$ = new E_Expr($1, new T_Text("%"), $3);
+																						}
+	| E_EXPR T_POW E_EXPR																{
+																							$$ = new E_Expr($1, new T_Text("^"), $3);
 																						}
 	| E_ENTITY 																			{
 																							$$ = $1;
