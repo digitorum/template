@@ -3,6 +3,6 @@
 <set c = <var[b].ucase>>
 <set d = <var[b].ucase> + 123>
 <set d = <var[b].ucase> - 123>
-<set d = <var[b].ucase> * <var[x]>>
+<set d = <var[b].ucase(1, 2, <var[e]>)> * <var[x]>>
 <set d = <var[b].ucase> / <var[x]>>
 <set d = <var[b].ucase> ^ <var[x]>>

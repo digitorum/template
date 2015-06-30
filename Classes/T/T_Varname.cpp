@@ -26,10 +26,22 @@ public:
 		string result = "";
 		int i = 0;
 
-		result = "$" + this->varname;
+		result = Token::LuaInstance->execute(
+			"varname",
+			map<string,string>() = {
+				{ "name", this->varname }
+			}
+		);
 		if(this->methods->size()) {
 			for(i=0; i<this->methods->size(); i++) {
-				result = this->methods->at(i)->getName() + "( " + result + this->methods->at(i)->getParameters()->Dump() + " ) ";
+				result =
+					Token::LuaInstance->execute(
+						"methodname",
+						map<string,string>() = {
+							{ "name", this->methods->at(i)->getName() }
+						}
+					)
+					+ "( " + result + this->methods->at(i)->getParameters()->Dump() + " ) ";
 			}
 		}
 		return result;

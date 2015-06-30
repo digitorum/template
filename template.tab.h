@@ -80,7 +80,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 33 "template.y"
+#line 35 "template.y"
 
 	char *sval;
 	Token *tpointer;

@@ -86,21 +86,23 @@
 #include "Classes/T/T_Const.cpp"
 #include "Classes/T/T_Set.cpp"
 
-
-
 extern "C" int yylex();
 extern "C" int yyparse();
 
 void  yyerror(const char * str);
 
+// списки для отслеживания состояний
 std::list<E_Main*> mains;
 std::list<E_Methods*> methods;
 std::list<E_Parameters*> parameters;
-	
+
+// указатель на Lua
+Lua* Token::LuaInstance = new Lua();
+
 
 
 /* Line 268 of yacc.c  */
-#line 104 "template.tab.c"
+#line 106 "template.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -170,7 +172,7 @@ typedef union YYSTYPE
 {
 
 /* Line 293 of yacc.c  */
-#line 33 "template.y"
+#line 35 "template.y"
 
 	char *sval;
 	Token *tpointer;
@@ -179,7 +181,7 @@ typedef union YYSTYPE
 
 
 /* Line 293 of yacc.c  */
-#line 183 "template.tab.c"
+#line 185 "template.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -191,7 +193,7 @@ typedef union YYSTYPE
 
 
 /* Line 343 of yacc.c  */
-#line 195 "template.tab.c"
+#line 197 "template.tab.c"
 
 #ifdef short
 # undef short
@@ -495,10 +497,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    59,    59,    62,    66,    74,    77,    80,    83,    91,
-     100,   103,   106,   109,   112,   115,   118,   121,   124,   127,
-     130,   133,   136,   139,   142,   145,   151,   155,   159,   162,
-     168,   171,   175,   182,   185,   188
+       0,    61,    61,    64,    68,    76,    79,    82,    85,    93,
+     102,   105,   108,   111,   114,   117,   120,   123,   126,   129,
+     132,   135,   138,   141,   144,   147,   153,   157,   161,   164,
+     170,   173,   177,   184,   187,   190
 };
 #endif
 
@@ -1488,7 +1490,7 @@ yyreduce:
         case 2:
 
 /* Line 1806 of yacc.c  */
-#line 59 "template.y"
+#line 61 "template.y"
     {
 																							mains.back()->push((yyvsp[(2) - (2)].tpointer));
 																						}
@@ -1497,7 +1499,7 @@ yyreduce:
   case 3:
 
 /* Line 1806 of yacc.c  */
-#line 62 "template.y"
+#line 64 "template.y"
     {
 																							std::cout << mains.back()->Dump() << std::endl;
 																							return 0;
@@ -1507,7 +1509,7 @@ yyreduce:
   case 4:
 
 /* Line 1806 of yacc.c  */
-#line 66 "template.y"
+#line 68 "template.y"
     {
 																							mains.push_back(new E_Main());
 																						}
@@ -1516,7 +1518,7 @@ yyreduce:
   case 5:
 
 /* Line 1806 of yacc.c  */
-#line 74 "template.y"
+#line 76 "template.y"
     {
 																							(yyval.tpointer) = (yyvsp[(1) - (1)].tpointer);
 									 													}
@@ -1525,7 +1527,7 @@ yyreduce:
   case 6:
 
 /* Line 1806 of yacc.c  */
-#line 77 "template.y"
+#line 79 "template.y"
     {
 																							(yyval.tpointer) = (yyvsp[(1) - (1)].tpointer);
 																						}
@@ -1534,7 +1536,7 @@ yyreduce:
   case 7:
 
 /* Line 1806 of yacc.c  */
-#line 80 "template.y"
+#line 82 "template.y"
     {
 																							(yyval.tpointer) = new T_Set(new T_Varname((yyvsp[(2) - (5)].sval), new E_Methods()), (yyvsp[(4) - (5)].tpointer));
 																						}
@@ -1543,7 +1545,7 @@ yyreduce:
   case 8:
 
 /* Line 1806 of yacc.c  */
-#line 83 "template.y"
+#line 85 "template.y"
     {
 																							(yyval.tpointer) = new T_Text((yyvsp[(1) - (1)].sval));
 																						}
@@ -1552,7 +1554,7 @@ yyreduce:
   case 9:
 
 /* Line 1806 of yacc.c  */
-#line 91 "template.y"
+#line 93 "template.y"
     {
 																							(yyval.tpointer) = new T_if((yyvsp[(2) - (5)].tpointer), mains.back());
 																							mains.pop_back();
@@ -1562,7 +1564,7 @@ yyreduce:
   case 10:
 
 /* Line 1806 of yacc.c  */
-#line 100 "template.y"
+#line 102 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr(new T_Text("("), (yyvsp[(2) - (3)].tpointer), new T_Text(")"));
 																						}
@@ -1571,7 +1573,7 @@ yyreduce:
   case 11:
 
 /* Line 1806 of yacc.c  */
-#line 103 "template.y"
+#line 105 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("&&"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1580,7 +1582,7 @@ yyreduce:
   case 12:
 
 /* Line 1806 of yacc.c  */
-#line 106 "template.y"
+#line 108 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("||"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1589,7 +1591,7 @@ yyreduce:
   case 13:
 
 /* Line 1806 of yacc.c  */
-#line 109 "template.y"
+#line 111 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("=="), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1598,7 +1600,7 @@ yyreduce:
   case 14:
 
 /* Line 1806 of yacc.c  */
-#line 112 "template.y"
+#line 114 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("!="), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1607,7 +1609,7 @@ yyreduce:
   case 15:
 
 /* Line 1806 of yacc.c  */
-#line 115 "template.y"
+#line 117 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text(">="), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1616,7 +1618,7 @@ yyreduce:
   case 16:
 
 /* Line 1806 of yacc.c  */
-#line 118 "template.y"
+#line 120 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text(">"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1625,7 +1627,7 @@ yyreduce:
   case 17:
 
 /* Line 1806 of yacc.c  */
-#line 121 "template.y"
+#line 123 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("<="), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1634,7 +1636,7 @@ yyreduce:
   case 18:
 
 /* Line 1806 of yacc.c  */
-#line 124 "template.y"
+#line 126 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("<"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1643,7 +1645,7 @@ yyreduce:
   case 19:
 
 /* Line 1806 of yacc.c  */
-#line 127 "template.y"
+#line 129 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("+"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1652,7 +1654,7 @@ yyreduce:
   case 20:
 
 /* Line 1806 of yacc.c  */
-#line 130 "template.y"
+#line 132 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("-"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1661,7 +1663,7 @@ yyreduce:
   case 21:
 
 /* Line 1806 of yacc.c  */
-#line 133 "template.y"
+#line 135 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("*"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1670,7 +1672,7 @@ yyreduce:
   case 22:
 
 /* Line 1806 of yacc.c  */
-#line 136 "template.y"
+#line 138 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("/"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1679,7 +1681,7 @@ yyreduce:
   case 23:
 
 /* Line 1806 of yacc.c  */
-#line 139 "template.y"
+#line 141 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("%"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1688,7 +1690,7 @@ yyreduce:
   case 24:
 
 /* Line 1806 of yacc.c  */
-#line 142 "template.y"
+#line 144 "template.y"
     {
 																							(yyval.tpointer) = new E_Expr((yyvsp[(1) - (3)].tpointer), new T_Text("^"), (yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1697,7 +1699,7 @@ yyreduce:
   case 25:
 
 /* Line 1806 of yacc.c  */
-#line 145 "template.y"
+#line 147 "template.y"
     {
 																							(yyval.tpointer) = (yyvsp[(1) - (1)].tpointer);
 																						}
@@ -1706,7 +1708,7 @@ yyreduce:
   case 26:
 
 /* Line 1806 of yacc.c  */
-#line 151 "template.y"
+#line 153 "template.y"
     {
 																							(yyval.tpointer) = new T_Varname((yyvsp[(3) - (6)].sval), methods.back());
 																							methods.pop_back();
@@ -1716,7 +1718,7 @@ yyreduce:
   case 27:
 
 /* Line 1806 of yacc.c  */
-#line 155 "template.y"
+#line 157 "template.y"
     {
 																							(yyval.tpointer) = new T_Const((yyvsp[(3) - (6)].sval), methods.back());
 																							methods.pop_back();
@@ -1726,7 +1728,7 @@ yyreduce:
   case 28:
 
 /* Line 1806 of yacc.c  */
-#line 159 "template.y"
+#line 161 "template.y"
     {
 																							(yyval.tpointer) = new T_Numeric((yyvsp[(1) - (1)].sval));
 																						}
@@ -1735,7 +1737,7 @@ yyreduce:
   case 29:
 
 /* Line 1806 of yacc.c  */
-#line 162 "template.y"
+#line 164 "template.y"
     {
 																							(yyval.tpointer) = new T_Text((yyvsp[(1) - (1)].sval));
 																						}
@@ -1744,7 +1746,7 @@ yyreduce:
   case 30:
 
 /* Line 1806 of yacc.c  */
-#line 168 "template.y"
+#line 170 "template.y"
     {
 																							methods.back()->push((yyvsp[(3) - (3)].sval), new E_Parameters());
 																						}
@@ -1753,7 +1755,7 @@ yyreduce:
   case 31:
 
 /* Line 1806 of yacc.c  */
-#line 171 "template.y"
+#line 173 "template.y"
     {
 																							methods.back()->push((yyvsp[(3) - (6)].sval), parameters.back());
 																							parameters.pop_back();
@@ -1763,7 +1765,7 @@ yyreduce:
   case 32:
 
 /* Line 1806 of yacc.c  */
-#line 175 "template.y"
+#line 177 "template.y"
     {
 																							methods.push_back(new E_Methods());
 																						}
@@ -1772,7 +1774,7 @@ yyreduce:
   case 33:
 
 /* Line 1806 of yacc.c  */
-#line 182 "template.y"
+#line 184 "template.y"
     {
 																							parameters.back()->push((yyvsp[(3) - (3)].tpointer));
 																						}
@@ -1781,7 +1783,7 @@ yyreduce:
   case 34:
 
 /* Line 1806 of yacc.c  */
-#line 185 "template.y"
+#line 187 "template.y"
     { 
 																							parameters.back()->push((yyvsp[(2) - (2)].tpointer));
 																						}
@@ -1790,7 +1792,7 @@ yyreduce:
   case 35:
 
 /* Line 1806 of yacc.c  */
-#line 188 "template.y"
+#line 190 "template.y"
     {
 																							parameters.push_back(new E_Parameters());
 																						}
@@ -1799,7 +1801,7 @@ yyreduce:
 
 
 /* Line 1806 of yacc.c  */
-#line 1803 "template.tab.c"
+#line 1805 "template.tab.c"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2030,7 +2032,7 @@ yyreturn:
 
 
 /* Line 2067 of yacc.c  */
-#line 192 "template.y"
+#line 194 "template.y"
 
 
 int main(int argc, char* argv[])

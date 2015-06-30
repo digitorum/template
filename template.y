@@ -17,17 +17,19 @@
 #include "Classes/T/T_Const.cpp"
 #include "Classes/T/T_Set.cpp"
 
-
-
 extern "C" int yylex();
 extern "C" int yyparse();
 
 void  yyerror(const char * str);
 
+// списки для отслеживания состояний
 std::list<E_Main*> mains;
 std::list<E_Methods*> methods;
 std::list<E_Parameters*> parameters;
-	
+
+// указатель на Lua
+Lua* Token::LuaInstance = new Lua();
+
 %}
 
 %union {
