@@ -47,8 +47,8 @@ public:
 		for(map<string,string>::const_iterator i = m.begin(); i !=m.end(); ++i) {
 			lua_pushstring(this->L, i->first.c_str());
 			lua_pushstring(this->L, i->second.c_str());
+			lua_settable(this->L, -3);
 		}
-		lua_settable(this->L, -3);
 		if (lua_pcall(L, 1, 1, 0)) {
 			this->error(L);
 		}
