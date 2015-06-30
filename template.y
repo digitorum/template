@@ -14,6 +14,7 @@
 #include "Classes/T/T_Numeric.cpp"
 #include "Classes/T/T_If.cpp"
 #include "Classes/T/T_Varname.cpp"
+#include "Classes/T/T_Const.cpp"
 
 
 
@@ -35,7 +36,7 @@ std::list<E_Parameters*> parameters;
 }
 
 %token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING
-%token T_VAR_OPEN
+%token T_VAR_OPEN T_CONST_OPEN
 %token T_IF_OPEN T_IF_CLOSE
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
@@ -125,6 +126,10 @@ E_EXPR:
 E_ENTITY:
 	T_VAR_OPEN T_SBRACKET_OPEN T_VAR_NAME T_SBRACKET_CLOSE E_METHODS T_TAG_CLOSE		{
 																							$$ = new T_Varname($3, methods.back());
+																							methods.pop_back();
+																						}
+	| T_CONST_OPEN T_SBRACKET_OPEN T_VAR_NAME T_SBRACKET_CLOSE E_METHODS T_TAG_CLOSE	{
+																							$$ = new T_Const($3, methods.back());
 																							methods.pop_back();
 																						}
 	| T_NUMERIC																			{

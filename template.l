@@ -79,6 +79,11 @@ WSN		[ \t\r\s]+
 							BEGIN(VAR);
 							return T_VAR_OPEN;
 						}
+	\<const				{
+							states.push(YY_START);
+							BEGIN(VAR);
+							return T_CONST_OPEN;
+						}
 }
 
 
