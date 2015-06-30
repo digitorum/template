@@ -57,4 +57,39 @@ public:
 		return result;
 	}
 
+
+	// вызов функции из LUA файла
+	string execute(string fname, vector<string> v) {
+		string result;
+
+		lua_getglobal(this->L, fname.c_str());
+		lua_newtable(this->L);
+		for(int i=0; i<v.size(); ++i) {
+			lua_pushinteger(this->L, i+1);
+			lua_pushstring(this->L, v.at(i).c_str());
+			lua_settable(this->L, -3);
+		}
+		if (lua_pcall(L, 1, 1, 0)) {
+			this->error(L);
+		}
+		result = lua_tostring(L, -1);
+		lua_pop(L,1);
+		return result;
+	}
+
+
+	// вызов функции из LUA файла
+	string execute(string fname, string s) {
+		string result;
+
+		lua_getglobal(this->L, fname.c_str());
+		lua_pushstring(L, s.c_str());
+		if (lua_pcall(L, 1, 1, 0)) {
+			this->error(L);
+		}
+		result = lua_tostring(L, -1);
+		lua_pop(L,1);
+		return result;
+	}
+
 };

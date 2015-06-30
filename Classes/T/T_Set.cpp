@@ -18,6 +18,12 @@ public:
 
 	// текстовое представление ноды
 	string Dump() {
-		return this->tokens.at(0)->Dump() + " = " + this->tokens.at(1)->Dump();
+		return Token::LuaInstance->execute(
+			"setVariable",
+			map<string,string>() = {
+				{"name", this->tokens.at(0)->Dump()},
+				{"value", this->tokens.at(1)->Dump()}
+			}
+		);
 	}
 };

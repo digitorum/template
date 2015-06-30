@@ -18,30 +18,24 @@ public:
 
 	// виртуальный деструктор
 	virtual ~T_Varname() {
-
+		delete this->methods;
 	}
 
 	// текстовое представление ноды
 	virtual string Dump() {
-		string result = "";
-		int i = 0;
-
-		result = Token::LuaInstance->execute(
-			"varname",
-			map<string,string>() = {
-				{ "name", this->varname }
-			}
-		);
+		string result = Token::LuaInstance->execute("getVariableName", this->varname);
 		if(this->methods->size()) {
-			for(i=0; i<this->methods->size(); i++) {
-				result =
-					Token::LuaInstance->execute(
-						"methodname",
-						map<string,string>() = {
-							{ "name", this->methods->at(i)->getName() }
-						}
-					)
-					+ "( " + result + this->methods->at(i)->getParameters()->Dump() + " ) ";
+			for(int i=0; i<this->methods->size(); ++i) {
+				vector<string> data = vector<string>();
+				vector<Token*> parameters = this->methods->at(i)->getParameters()->get();
+				data.push_back(Token::LuaInstance->execute("getMethodName", this->methods->at(i)->getName()));
+				data.push_back(result);
+				if(parameters.size() > 0) {
+					for(int j=0; j<parameters.size(); ++j) {
+						data.push_back(parameters.at(j)->Dump());
+					}
+				}
+				result = Token::LuaInstance->execute("castMethod", data);
 			}
 		}
 		return result;

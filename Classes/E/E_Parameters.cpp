@@ -16,7 +16,7 @@ public:
 
 	// деструтокр
 	~E_Parameters() {
-
+		this->parameters.empty();
 	}
 
 	// добавить параметр
@@ -25,13 +25,7 @@ public:
 	}
 
 	// текстовое представление
-	string Dump() {
-		string result = "";
-		int i = 0;
-
-		for(i=0; i<this->parameters.size(); ++i) {
-			result += ", " + this->parameters.at(i)->Dump();
-		}
-		return result;
+	vector<Token*> get() {
+		return this->parameters;
 	}
 };
