@@ -4,3 +4,7 @@ template.output
 .cproject
 .externalToolBuilders
 .settings
+lex.yy.c
+template.tab.c
+template.tab.h
+template
