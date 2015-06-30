@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include <typeinfo>
-#include <list>
 #include <vector>
 #include <map>
 #include "Classes/Token.cpp"
@@ -23,9 +22,9 @@ extern "C" int yyparse();
 void  yyerror(const char * str);
 
 // списки для отслеживания состояний
-std::list<E_Main*> mains;
-std::list<E_Methods*> methods;
-std::list<E_Parameters*> parameters;
+std::vector<E_Main*> mains;
+std::vector<E_Methods*> methods;
+std::vector<E_Parameters*> parameters;
 
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
@@ -40,7 +39,7 @@ Lua* Token::LuaInstance = new Lua();
 
 %token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING
 %token T_VAR_OPEN T_CONST_OPEN
-%token T_IF_OPEN T_IF_CLOSE
+%token T_IF_OPEN T_IF_ELSE T_IF_CLOSE
 %token T_SET_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
@@ -91,7 +90,12 @@ E_SCRIPT:
 
 E_IF:
 	T_IF_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_IF_CLOSE										{
-																							$$ = new T_if($2, mains.back());
+																							$$ = new T_If($2, mains.back());
+																							mains.pop_back();
+																						}
+	| T_IF_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_IF_ELSE E_MAIN T_IF_CLOSE					{
+																							$$ = new T_If($2, mains.at(mains.size()-2), mains.at(mains.size()-1));
+																							mains.pop_back();
 																							mains.pop_back();
 																						}
 

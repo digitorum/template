@@ -45,31 +45,32 @@
      T_VAR_OPEN = 263,
      T_CONST_OPEN = 264,
      T_IF_OPEN = 265,
-     T_IF_CLOSE = 266,
-     T_SET_OPEN = 267,
-     T_TAG_CLOSE = 268,
-     T_SBRACKET_OPEN = 269,
-     T_SBRACKET_CLOSE = 270,
-     T_RBRACKET_OPEN = 271,
-     T_RBRACKET_CLOSE = 272,
-     T_AND = 273,
-     T_OR = 274,
-     T_EQ = 275,
-     T_NOT_EQ = 276,
-     T_GT = 277,
-     T_GE = 278,
-     T_LT = 279,
-     T_LE = 280,
-     T_ASSIGNMENT = 281,
-     T_PLUS = 282,
-     T_MINUS = 283,
-     T_MULTIPLY = 284,
-     T_DIVISION = 285,
-     T_MODULO = 286,
-     T_POW = 287,
-     T_DOT = 288,
-     T_COMMA = 289,
-     T_END = 290
+     T_IF_ELSE = 266,
+     T_IF_CLOSE = 267,
+     T_SET_OPEN = 268,
+     T_TAG_CLOSE = 269,
+     T_SBRACKET_OPEN = 270,
+     T_SBRACKET_CLOSE = 271,
+     T_RBRACKET_OPEN = 272,
+     T_RBRACKET_CLOSE = 273,
+     T_AND = 274,
+     T_OR = 275,
+     T_EQ = 276,
+     T_NOT_EQ = 277,
+     T_GT = 278,
+     T_GE = 279,
+     T_LT = 280,
+     T_LE = 281,
+     T_ASSIGNMENT = 282,
+     T_PLUS = 283,
+     T_MINUS = 284,
+     T_MULTIPLY = 285,
+     T_DIVISION = 286,
+     T_MODULO = 287,
+     T_POW = 288,
+     T_DOT = 289,
+     T_COMMA = 290,
+     T_END = 291
    };
 #endif
 
@@ -80,7 +81,7 @@ typedef union YYSTYPE
 {
 
 /* Line 2068 of yacc.c  */
-#line 35 "template.y"
+#line 34 "template.y"
 
 	char *sval;
 	Token *tpointer;
@@ -89,7 +90,7 @@ typedef union YYSTYPE
 
 
 /* Line 2068 of yacc.c  */
-#line 93 "template.tab.h"
+#line 94 "template.tab.h"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

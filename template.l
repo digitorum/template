@@ -3,7 +3,6 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <list>
 #include <vector>
 #include <map>
 #include "Classes/Token.cpp"
@@ -17,10 +16,6 @@ S_List states;
 std::string buffer;
 
 extern "C" int yylex();
-
-void ___dump(char *src) {
-	std::cout << src << std::endl;
-}
 
 %}
 
@@ -45,6 +40,9 @@ WSN		[ \t\r\s]+
 							states.push(YY_START);
 							BEGIN(SCRIPT);
 							return T_IF_OPEN;
+						}
+	\<else{WS}*>		{
+							return T_IF_ELSE;
 						}
 	\<\/if{WS}*>		{
 							return T_IF_CLOSE;

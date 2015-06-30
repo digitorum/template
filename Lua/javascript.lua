@@ -46,5 +46,18 @@ end
 
 -- объявление переменной
 function setVariable(data)
-	return "var " .. data.name .. " = " .. data.value .. ";";
+	return "var " .. data.name .. " = " .. data.value .. ";"
+end
+
+
+
+-- if (expr) { statement } [else { statement }]
+function getIf(data)
+	local result = "";
+	
+	result = " if (" .. data.expr .. ") { " .. data.statement .. " } "
+	if not (data.elsestatement == "") then
+		result = result .. " else { " .. data.elsestatement .. " } "
+	end
+	return result
 end

@@ -3,6 +3,13 @@ Text before
 	x-statement
 	<if <var[y]>>
 		y-statement
+	<else>
+		y-statement-else
 	</if>
+<else>
+	x-statement-else
 </if >
+<if 1 == 1 >
+	without else
+</if>
 Text after
