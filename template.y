@@ -11,6 +11,7 @@
 #include "Classes/E/E_Methods.cpp"
 #include "Classes/E/E_If.cpp"
 #include "Classes/E/E_Set.cpp"
+#include "Classes/E/E_Print.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
 #include "Classes/T/T_Var.cpp"
@@ -41,6 +42,7 @@ Lua* Token::LuaInstance = new Lua();
 %token T_VAR_OPEN T_CONST_OPEN
 %token T_IF_OPEN T_IF_ELSE T_IF_CLOSE
 %token T_SET_OPEN
+%token T_PRINT_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
 %token T_AND T_OR
@@ -76,10 +78,13 @@ E_SCRIPT:
 																							$$ = $1;
 									 													}
 	| E_EXPR																			{
-																							$$ = $1;
+																							$$ = new E_Print($1);
 																						}
 	| T_SET_OPEN T_VAR_NAME T_ASSIGNMENT E_EXPR T_TAG_CLOSE								{
 																							$$ = new E_Set(new T_Var($2, new E_Methods()), $4);
+																						}
+	| T_PRINT_OPEN E_EXPR T_TAG_CLOSE													{
+																							$$ = new E_Print($2);
 																						}
 	| T_TEXT																			{
 																							$$ = new T_Text($1);

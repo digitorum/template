@@ -80,12 +80,12 @@ end
 
 -- получить E_Main в виде строки
 function E_Main(data, options)
-	return table.concat(data, "");
+	return table.concat(data, "")
 	-- todo: complete
 	--if(options["isFinal"] == "true") then
-	--	return " var f = function() { var result = '" .. table.concat(data, "") .. "' return result; } ";
+	--	return " var f = function() { var result = '" .. table.concat(data, "") .. "' return result; } "
 	--else
-	--	return "'" .. table.concat(data, "") .. "'";
+	--	return "'" .. table.concat(data, "") .. "'"
 	--end
 end;
 
@@ -93,5 +93,12 @@ end;
 
 -- получить E_Expr в виде строки
 function E_Expr(data)
-	return table.concat(data, " ");
+	return table.concat(data, " ")
+end
+
+
+
+-- получить E_Print в виде строки
+function E_Print(data)
+	return "print " .. data .. " "
 end

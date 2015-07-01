@@ -52,6 +52,11 @@ WSN		[ \t\r\s]+
 							BEGIN(SET);
 							return T_SET_OPEN;
 						}
+	\<print{WS}+		{
+							states.push(YY_START);
+							BEGIN(SCRIPT);
+							return T_PRINT_OPEN;
+						}
 	\n					{
 							yylval.sval = strdup(yytext);
 							return T_TEXT;
