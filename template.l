@@ -32,57 +32,73 @@ extern "C" int yylex();
 %s SET
 
 WS		[ \t]+
-WSN		[ \t\r\s]+
+WSN		[ \t\r\s\n]+
 
 %%
 
 <INITIAL,TEXT>{
 
-	\<if{WS}+			{
-							states.push(YY_START);
-							BEGIN(SCRIPT);
-							return T_IF_OPEN;
-						}
-	\<else{WS}*>		{
-							return T_IF_ELSE;
-						}
-	\<\/if{WS}*>		{
-							return T_IF_CLOSE;
-						}
-	\<set{WS}+			{
-							states.push(YY_START);
-							BEGIN(SET);
-							return T_SET_OPEN;
-						}
-	\<print{WS}+		{
-							states.push(YY_START);
-							BEGIN(SCRIPT);
-							return T_PRINT_OPEN;
-						}
-	\<include{WS}+		{
-							states.push(YY_START);
-							BEGIN(ATTRIBUTES);
-							return T_INCLUDE_OPEN;
-						}
-	\<each{WS}+			{
-							states.push(YY_START);
-							BEGIN(SCRIPT);
-							return T_EACH_OPEN;
-						}
-	\<\/each{WS}*>		{
-							return T_EACH_CLOSE;
-						}
-	\n					{
-							yylval.sval = strdup(yytext);
-							return T_TEXT;
-						}
-	.					{
-							yylval.sval = strdup(yytext);
-							return T_TEXT;
-						}
-	<<EOF>>				{
-							return T_END;
-						}
+	\<if{WS}+				{
+								states.push(YY_START);
+								BEGIN(SCRIPT);
+								return T_IF_OPEN;
+							}
+	\<else{WS}*>			{
+								return T_IF_ELSE;
+							}
+	\<\/if{WS}*>			{
+								return T_IF_CLOSE;
+							}
+	\<set{WS}+				{
+								states.push(YY_START);
+								BEGIN(SET);
+								return T_SET_OPEN;
+							}
+	\<print{WS}+			{
+								states.push(YY_START);
+								BEGIN(SCRIPT);
+								return T_PRINT_OPEN;
+							}
+	\<include{WS}+			{
+								states.push(YY_START);
+								BEGIN(ATTRIBUTES);
+								return T_INCLUDE_OPEN;
+							}
+	\<each{WS}+				{
+								states.push(YY_START);
+								BEGIN(SCRIPT);
+								return T_EACH_OPEN;
+							}
+	\<\/each{WS}*>			{
+								return T_EACH_CLOSE;
+							}
+	\<switch{WS}+			{
+								states.push(YY_START);
+								BEGIN(SCRIPT);
+								return T_SWICTH_OPEN;
+							}
+	\<\/switch{WS}*>{WSN}*	{
+								return T_SWICTH_CLOSE;
+							}
+	\<case{WS}+				{
+								states.push(YY_START);
+								BEGIN(SCRIPT);
+								return T_CASE_OPEN;
+							}
+	\<\/case{WS}*>{WSN}*	{
+								return T_CASE_CLOSE;
+							}
+	\n						{
+								yylval.sval = strdup(yytext);
+								return T_TEXT;
+							}
+	.						{
+								yylval.sval = strdup(yytext);
+								return T_TEXT;
+							}
+	<<EOF>>					{
+								return T_END;
+							}
 }
 
 
@@ -257,7 +273,7 @@ WSN		[ \t\r\s]+
 
 <SCRIPT,SET>{
 
-	{WSN}*				;
+	{WSN}+				;
 
 }
 

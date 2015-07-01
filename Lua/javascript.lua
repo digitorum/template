@@ -121,3 +121,26 @@ end
 function E_Each(data)
 	return "foreach " .. data["var"] .. " as " .. data["k"] .. " => " .. data["v"] .. " " .. data["body"] .. " endforeach"
 end;
+
+
+-- получить E_Switch в виде строки
+function E_Switch(data)
+	local result = "";
+	
+	for i,line in pairs(data) do
+		if (i == 1) then
+			result = result .. "switch (" .. data[i] .. ") "
+		else
+			result = result .. data[i]
+		end
+	end
+	return result .. " endswitch"
+end
+
+
+
+-- получить E_Case в виде строки
+function E_Case(data)
+	return "case " .. data["expr"] .. ": " .. data["body"] .. " endcase"
+end
+

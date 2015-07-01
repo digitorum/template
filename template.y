@@ -16,6 +16,8 @@
 #include "Classes/E/E_Attributes.cpp"
 #include "Classes/E/E_Include.cpp"
 #include "Classes/E/E_Each.cpp"
+#include "Classes/E/E_Case.cpp"
+#include "Classes/E/E_Switch.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
 #include "Classes/T/T_Var.cpp"
@@ -31,6 +33,7 @@ std::vector<E_Main*> mains;
 std::vector<E_Methods*> methods;
 std::vector<E_Parameters*> parameters;
 std::vector<E_Attributes*> attibutes;
+std::vector<E_Switch*> switches;
 
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
@@ -52,6 +55,8 @@ string Token::AppPath = "";
 %token T_SET_OPEN
 %token T_PRINT_OPEN
 %token T_INCLUDE_OPEN
+%token T_SWICTH_OPEN T_SWICTH_CLOSE
+%token T_CASE_OPEN T_CASE_CLOSE
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
 %token T_AND T_OR T_AS
@@ -62,7 +67,7 @@ string Token::AppPath = "";
 
 %left T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE T_AND T_OR T_ASSIGNMENT T_PLUS T_MINUS T_MULTIPLY T_DIVISION T_MODULO T_POW
 
-%type <tpointer> E_EXPR E_IF E_SCRIPT E_ENTITY
+%type <tpointer> E_EXPR E_IF E_SCRIPT E_ENTITY E_CASES
 %type <mpointer> E_METHODS
 
 %%
@@ -105,6 +110,21 @@ E_SCRIPT:
 	| T_EACH_OPEN E_ENTITY T_AS E_ENTITY E_ENTITY T_TAG_CLOSE E_MAIN T_EACH_CLOSE		{
 																							$$ = new E_Each($2, $4, $5, mains.back());
 																							mains.pop_back();
+																						}
+	| T_SWICTH_OPEN E_ENTITY T_TAG_CLOSE E_CASES T_SWICTH_CLOSE							{
+																							switches.back()->setExpr($2);
+																							$$ = switches.back();
+																							switches.pop_back();
+																						}
+
+
+E_CASES:
+	E_CASES T_CASE_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_CASE_CLOSE							{
+																							switches.back()->push(new E_Case($3, mains.back()));
+																							mains.pop_back();
+																						}
+	| /* empty */																		{
+																							switches.push_back(new E_Switch());
 																						}
 
 
