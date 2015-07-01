@@ -115,3 +115,9 @@ function E_Include(result, variables)
 	end
 	return "(var f = function(" .. table.concat(pass, ", ") .. "){" .. result .. "}; f(" .. table.concat(args, ", ") .."))"
 end
+
+
+-- получить E_Each в виде строки
+function E_Each(data)
+	return "foreach " .. data["var"] .. " as " .. data["k"] .. " => " .. data["v"] .. " " .. data["body"] .. " endforeach"
+end;

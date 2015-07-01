@@ -64,6 +64,14 @@ WSN		[ \t\r\s]+
 							BEGIN(ATTRIBUTES);
 							return T_INCLUDE_OPEN;
 						}
+	\<each{WS}+			{
+							states.push(YY_START);
+							BEGIN(SCRIPT);
+							return T_EACH_OPEN;
+						}
+	\<\/each{WS}*>		{
+							return T_EACH_CLOSE;
+						}
 	\n					{
 							yylval.sval = strdup(yytext);
 							return T_TEXT;
@@ -220,6 +228,9 @@ WSN		[ \t\r\s]+
 						}
 	le					{
 							return T_LE;
+						}
+	as					{
+							return T_AS;
 						}
 	\+					{
 							return T_PLUS;

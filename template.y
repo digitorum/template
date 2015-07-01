@@ -15,6 +15,7 @@
 #include "Classes/E/E_Print.cpp"
 #include "Classes/E/E_Attributes.cpp"
 #include "Classes/E/E_Include.cpp"
+#include "Classes/E/E_Each.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
 #include "Classes/T/T_Var.cpp"
@@ -47,12 +48,13 @@ string Token::AppPath = "";
 %token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING T_ATTR_NAME
 %token T_VAR_OPEN T_CONST_OPEN
 %token T_IF_OPEN T_IF_ELSE T_IF_CLOSE
+%token T_EACH_OPEN T_EACH_CLOSE
 %token T_SET_OPEN
 %token T_PRINT_OPEN
 %token T_INCLUDE_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
-%token T_AND T_OR
+%token T_AND T_OR T_AS
 %token T_EQ T_NOT_EQ T_GT T_GE T_LT T_LE T_ASSIGNMENT
 %token T_PLUS T_MINUS T_MULTIPLY T_DIVISION T_MODULO T_POW
 %token T_DOT T_COMMA
@@ -99,6 +101,10 @@ E_SCRIPT:
 	| T_INCLUDE_OPEN E_ATTRIBUTES T_TAG_CLOSE											{
 																							$$ = new E_Include(attibutes.back());
 																							attibutes.pop_back();
+																						}
+	| T_EACH_OPEN E_ENTITY T_AS E_ENTITY E_ENTITY T_TAG_CLOSE E_MAIN T_EACH_CLOSE		{
+																							$$ = new E_Each($2, $4, $5, mains.back());
+																							mains.pop_back();
 																						}
 
 
