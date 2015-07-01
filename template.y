@@ -5,6 +5,7 @@
 #include <typeinfo>
 #include <vector>
 #include <map>
+#include <boost/algorithm/string.hpp>
 #include "Classes/Token.cpp"
 #include "Classes/E/E_Main.cpp"
 #include "Classes/E/E_Expr.cpp"
@@ -12,6 +13,8 @@
 #include "Classes/E/E_If.cpp"
 #include "Classes/E/E_Set.cpp"
 #include "Classes/E/E_Print.cpp"
+#include "Classes/E/E_Attributes.cpp"
+#include "Classes/E/E_Include.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
 #include "Classes/T/T_Var.cpp"
@@ -26,9 +29,12 @@ void  yyerror(const char * str);
 std::vector<E_Main*> mains;
 std::vector<E_Methods*> methods;
 std::vector<E_Parameters*> parameters;
+std::vector<E_Attributes*> attibutes;
 
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
+// Путь до приложения
+string Token::AppPath = "";
 
 %}
 
@@ -38,11 +44,12 @@ Lua* Token::LuaInstance = new Lua();
 	E_Methods *mpointer;
 }
 
-%token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING
+%token <sval> T_TEXT T_NUMERIC T_VAR_NAME T_METHOD_NAME T_STRING T_ATTR_NAME
 %token T_VAR_OPEN T_CONST_OPEN
 %token T_IF_OPEN T_IF_ELSE T_IF_CLOSE
 %token T_SET_OPEN
 %token T_PRINT_OPEN
+%token T_INCLUDE_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
 %token T_AND T_OR
@@ -88,6 +95,21 @@ E_SCRIPT:
 																						}
 	| T_TEXT																			{
 																							$$ = new T_Text($1);
+																						}
+	| T_INCLUDE_OPEN E_ATTRIBUTES T_TAG_CLOSE											{
+																							$$ = new E_Include(attibutes.back());
+																							attibutes.pop_back();
+																						}
+
+
+
+
+E_ATTRIBUTES:
+	E_ATTRIBUTES T_ATTR_NAME T_ASSIGNMENT E_EXPR										{
+																							attibutes.back()->push($2, $4);
+																						}
+	| /* empty */																		{
+																							attibutes.push_back(new E_Attributes());
 																						}
 
 
@@ -204,6 +226,11 @@ E_PARAMETERS:
 
 int main(int argc, char* argv[])
 {
+	Token::AppPath = argv[0];
+	
+	//for(int i=1; i<argc; ++i) {
+	//	std::cout << argv[i] << std::endl; 
+	//}
 	yyparse();
 }
 

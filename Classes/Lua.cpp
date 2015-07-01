@@ -13,6 +13,17 @@ protected:
 
 	lua_State* L;
 
+
+	// вызов фуцнкции из lua-файла
+	string luaCall() {
+		if (lua_pcall(L, 2, 1, 0)) {
+			this->error(L);
+		}
+		string result = lua_tostring(L, -1);
+		lua_pop(L,1);
+		return result;
+	}
+
 public:
 
 	// конструктор
@@ -58,50 +69,28 @@ public:
 
 	// вызов функции из LUA файла
 	string execute(string fname, map<string,string> table, map<string,string> options = map<string,string>()) {
-		string result;
-
 		lua_getglobal(this->L, fname.c_str());
 		this->pushTable(table);
 		this->pushTable(options);
-
-		if (lua_pcall(L, 2, 1, 0)) {
-			this->error(L);
-		}
-		result = lua_tostring(L, -1);
-		lua_pop(L,1);
-		return result;
+		return this->luaCall();
 	}
 
 
 	// вызов функции из LUA файла
 	string execute(string fname, vector<string> v, map<string,string> options = map<string,string>()) {
-		string result;
-
 		lua_getglobal(this->L, fname.c_str());
 		this->pushTable(v);
 		this->pushTable(options);
-
-		if (lua_pcall(L, 2, 1, 0)) {
-			this->error(L);
-		}
-		result = lua_tostring(L, -1);
-		lua_pop(L,1);
-		return result;
+		return this->luaCall();
 	}
 
 
 	// вызов функции из LUA файла
-	string execute(string fname, string s) {
-		string result;
-
+	string execute(string fname, string s, map<string,string> options = map<string,string>()) {
 		lua_getglobal(this->L, fname.c_str());
 		lua_pushstring(L, s.c_str());
-		if (lua_pcall(L, 1, 1, 0)) {
-			this->error(L);
-		}
-		result = lua_tostring(L, -1);
-		lua_pop(L,1);
-		return result;
+		this->pushTable(options);
+		return this->luaCall();
 	}
 
 };

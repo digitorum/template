@@ -102,3 +102,16 @@ end
 function E_Print(data)
 	return "print " .. data .. " "
 end
+
+
+-- подключение подшаблона
+function E_Include(result, variables)
+	local pass = { }
+	local args = { }
+	
+	for i,line in pairs(variables) do
+		table.insert(pass, i);
+		table.insert(args, variables[i]);
+	end
+	return "(var f = function(" .. table.concat(pass, ", ") .. "){" .. result .. "}; f(" .. table.concat(args, ", ") .."))"
+end

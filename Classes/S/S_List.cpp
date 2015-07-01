@@ -4,10 +4,12 @@ class S_List {
 
 public:
 
+	int last;
+
 	int pop() {
-		int state = states[states.size() - 1];
+		last = states[states.size() - 1];
 		states.pop_back();
-		return state;
+		return last;
 	}
 
 	void push(int state) {

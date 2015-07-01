@@ -27,6 +27,8 @@ extern "C" int yylex();
 %s STRING_SQ
 %s STRING_DQ
 %s SCRIPT
+%s ATTRIBUTES
+%s ATTRIBUTE_VALUE
 %s SET
 
 WS		[ \t]+
@@ -57,6 +59,11 @@ WSN		[ \t\r\s]+
 							BEGIN(SCRIPT);
 							return T_PRINT_OPEN;
 						}
+	\<include{WS}+		{
+							states.push(YY_START);
+							BEGIN(ATTRIBUTES);
+							return T_INCLUDE_OPEN;
+						}
 	\n					{
 							yylval.sval = strdup(yytext);
 							return T_TEXT;
@@ -85,7 +92,7 @@ WSN		[ \t\r\s]+
 
 
 
-<INITIAL,TEXT,SCRIPT,PARAMETERS>{
+<INITIAL,TEXT,SCRIPT,PARAMETERS,ATTRIBUTE_VALUE>{
 
 	\<var				{
 							states.push(YY_START);
@@ -102,7 +109,7 @@ WSN		[ \t\r\s]+
 
 
 
-<SCRIPT,PARAMETERS>{
+<SCRIPT,PARAMETERS,ATTRIBUTE_VALUE>{
 	[0-9]				{
 							states.push(YY_START);
 							BEGIN(NUMERIC);
@@ -157,7 +164,7 @@ WSN		[ \t\r\s]+
 
 
 
-<VAR,SCRIPT>{
+<VAR,SCRIPT,ATTRIBUTES>{
 
 	>{WSN}*				{
 							BEGIN(states.pop());
@@ -169,10 +176,10 @@ WSN		[ \t\r\s]+
 
 
 
-<METHODS,PARAMETERS>{
+<METHODS,PARAMETERS,ATTRIBUTE_VALUE>{
 
 	>					{
-							// возвращаемся в "VAR", при этом пересканируем ">" заново
+							// возвращаемся в "VAR,ATTRIUTE", при этом пересканируем ">" заново
 							BEGIN(states.pop());
 							yyless(0);
 						}
@@ -314,5 +321,33 @@ WSN		[ \t\r\s]+
 	,					{
 							return T_COMMA;
 						}
+}
+
+
+
+<ATTRIBUTES>{
+	[a-z0-9_]+			{
+							yylval.sval = strdup(yytext);
+							return T_ATTR_NAME;
+						}
+	=					{
+							states.push(YY_START);
+							BEGIN(ATTRIBUTE_VALUE);
+							return T_ASSIGNMENT;
+						}
+	{WS}+				;
+}
+
+
+
+<ATTRIBUTE_VALUE>{
+	{WS}+				{
+							BEGIN(states.pop());
+						}
+	[a-z0-9_]			{
+							// внезапно нашли символ, значит мы подошли вплотную к следующему аттрибуту, нужно пересканировать
+							BEGIN(states.pop());
+							yyless(0);
+						}		
 }
 %%

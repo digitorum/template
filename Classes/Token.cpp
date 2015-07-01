@@ -6,7 +6,11 @@ class Token {
 
 public:
 
+	// указатель на lua
 	static Lua* LuaInstance;
+
+	// путь до приложения
+	static string AppPath;
 
 	// конструктор
 	Token() {
