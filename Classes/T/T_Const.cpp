@@ -21,8 +21,13 @@ public:
 
 	}
 
+	// имя токена
+	virtual string getType() {
+		return "T_Const";
+	}
+
 	// текстовое представление ноды
-	virtual string Dump() {
+	virtual string dump(map<string,string> options = map<string,string>()) {
 		string result = Token::LuaInstance->execute("getConstantName", this->varname);
 		if(this->methods->size()) {
 			for(int i=0; i<this->methods->size(); ++i) {
@@ -32,7 +37,7 @@ public:
 				data.push_back(result);
 				if(parameters.size() > 0) {
 					for(int j=0; j<parameters.size(); ++j) {
-						data.push_back(parameters.at(j)->Dump());
+						data.push_back(parameters.at(j)->dump());
 					}
 				}
 				result = Token::LuaInstance->execute("castMethod", data);

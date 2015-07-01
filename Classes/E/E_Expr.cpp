@@ -16,12 +16,17 @@ public:
 	}
 
 	// деструктор
-	~E_Expr() {
+	virtual ~E_Expr() {
 		this->tokens.clear();
 	}
 
+	// имя токена
+	virtual string getType() {
+		return "E_Expr";
+	}
+
 	// текстовое представление ноды
-	string Dump() {
+	virtual string dump(map<string,string> options = map<string,string>()) {
 		string result = "";
 		int i = 0;
 
@@ -29,7 +34,7 @@ public:
 			if(result != "") {
 				result += " ";
 			}
-			result += this->tokens.at(i)->Dump();
+			result += this->tokens.at(i)->dump();
 		}
 		return result;
 	}

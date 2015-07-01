@@ -51,8 +51,8 @@ end
 
 
 
--- if (expr) { statement } [else { statement }]
-function getIf(data)
+-- получить E_If в виде строки
+function E_If(data)
 	local result = "";
 	
 	result = " if (" .. data.expr .. ") { " .. data.statement .. " } "
@@ -61,3 +61,16 @@ function getIf(data)
 	end
 	return result
 end
+
+
+
+-- получить E_Main в виде строки
+function E_Main(data, options)
+	return table.concat(data, "");
+	-- todo: complete
+	--if(options["isFinal"] == "true") then
+	--	return " var f = function() { var result = '" .. table.concat(data, "") .. "' return result; } ";
+	--else
+	--	return "'" .. table.concat(data, "") .. "'";
+	--end
+end;

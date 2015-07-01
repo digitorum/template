@@ -11,7 +11,7 @@ public:
 
 	// конструктор, на вход принимаем строку
 	T_Text(string str) {
-		text = str;
+		this->text = str;
 	}
 
 	// деструктор
@@ -19,8 +19,26 @@ public:
 
 	}
 
-	// вернуть текстовое значение
-	virtual string Dump() {
-		return text;
+	// имя токена
+	virtual string getType() {
+		return "T_Text";
 	}
+
+	// вернуть текстовое значение
+	virtual string dump(map<string,string> options = map<string,string>()) {
+		return this->text;
+	}
+
+	// получить raw представление токена
+	virtual string getRaw() {
+		return this->text;
+	}
+
+	// дописать текстовый токен
+	virtual void mergeWith(Token* token) {
+		if(token->getType() == "T_Text") {
+			this->text += token->getRaw();
+		}
+	}
+
 };

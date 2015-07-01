@@ -38,18 +38,33 @@ public:
 		exit(1);
 	}
 
-	// вызов функции из LUA файла
-	string execute(string fname, map<string,string> m) {
-		string result;
-
-		lua_getglobal(this->L, fname.c_str());
+	void pushTable(map<string,string> table) {
 		lua_newtable(this->L);
-		for(map<string,string>::const_iterator i = m.begin(); i !=m.end(); ++i) {
+		for(map<string,string>::const_iterator i = table.begin(); i !=table.end(); ++i) {
 			lua_pushstring(this->L, i->first.c_str());
 			lua_pushstring(this->L, i->second.c_str());
 			lua_settable(this->L, -3);
 		}
-		if (lua_pcall(L, 1, 1, 0)) {
+	}
+
+	void pushTable(vector<string> v) {
+		lua_newtable(this->L);
+		for(int i=0; i<v.size(); ++i) {
+			lua_pushinteger(this->L, i+1);
+			lua_pushstring(this->L, v.at(i).c_str());
+			lua_settable(this->L, -3);
+		}
+	}
+
+	// вызов функции из LUA файла
+	string execute(string fname, map<string,string> table, map<string,string> options = map<string,string>()) {
+		string result;
+
+		lua_getglobal(this->L, fname.c_str());
+		this->pushTable(table);
+		this->pushTable(options);
+
+		if (lua_pcall(L, 2, 1, 0)) {
 			this->error(L);
 		}
 		result = lua_tostring(L, -1);
@@ -59,17 +74,14 @@ public:
 
 
 	// вызов функции из LUA файла
-	string execute(string fname, vector<string> v) {
+	string execute(string fname, vector<string> v, map<string,string> options = map<string,string>()) {
 		string result;
 
 		lua_getglobal(this->L, fname.c_str());
-		lua_newtable(this->L);
-		for(int i=0; i<v.size(); ++i) {
-			lua_pushinteger(this->L, i+1);
-			lua_pushstring(this->L, v.at(i).c_str());
-			lua_settable(this->L, -3);
-		}
-		if (lua_pcall(L, 1, 1, 0)) {
+		this->pushTable(v);
+		this->pushTable(options);
+
+		if (lua_pcall(L, 2, 1, 0)) {
 			this->error(L);
 		}
 		result = lua_tostring(L, -1);

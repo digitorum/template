@@ -9,12 +9,12 @@
 #include "Classes/E/E_Main.cpp"
 #include "Classes/E/E_Expr.cpp"
 #include "Classes/E/E_Methods.cpp"
+#include "Classes/E/E_If.cpp"
+#include "Classes/E/E_Set.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
-#include "Classes/T/T_If.cpp"
-#include "Classes/T/T_Varname.cpp"
+#include "Classes/T/T_Var.cpp"
 #include "Classes/T/T_Const.cpp"
-#include "Classes/T/T_Set.cpp"
 
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -61,7 +61,7 @@ E_MAIN:
 																							mains.back()->push($2);
 																						}
 	| E_MAIN T_END																		{
-																							std::cout << mains.back()->Dump() << std::endl;
+																							std::cout << mains.back()->dump(map<string,string>() = { {"isFinal", "true"} }) << std::endl;
 																							return 0;
 																						}
 	| /* empty */																		{
@@ -79,7 +79,7 @@ E_SCRIPT:
 																							$$ = $1;
 																						}
 	| T_SET_OPEN T_VAR_NAME T_ASSIGNMENT E_EXPR T_TAG_CLOSE								{
-																							$$ = new T_Set(new T_Varname($2, new E_Methods()), $4);
+																							$$ = new E_Set(new T_Var($2, new E_Methods()), $4);
 																						}
 	| T_TEXT																			{
 																							$$ = new T_Text($1);
@@ -90,11 +90,11 @@ E_SCRIPT:
 
 E_IF:
 	T_IF_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_IF_CLOSE										{
-																							$$ = new T_If($2, mains.back());
+																							$$ = new E_If($2, mains.back());
 																							mains.pop_back();
 																						}
 	| T_IF_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_IF_ELSE E_MAIN T_IF_CLOSE					{
-																							$$ = new T_If($2, mains.at(mains.size()-2), mains.at(mains.size()-1));
+																							$$ = new E_If($2, mains.at(mains.size()-2), mains.at(mains.size()-1));
 																							mains.pop_back();
 																							mains.pop_back();
 																						}
@@ -155,7 +155,7 @@ E_EXPR:
 
 E_ENTITY:
 	T_VAR_OPEN T_SBRACKET_OPEN T_VAR_NAME T_SBRACKET_CLOSE E_METHODS T_TAG_CLOSE		{
-																							$$ = new T_Varname($3, methods.back());
+																							$$ = new T_Var($3, methods.back());
 																							methods.pop_back();
 																						}
 	| T_CONST_OPEN T_SBRACKET_OPEN T_VAR_NAME T_SBRACKET_CLOSE E_METHODS T_TAG_CLOSE	{

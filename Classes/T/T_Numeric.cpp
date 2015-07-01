@@ -16,8 +16,13 @@ public:
 
 	}
 
+	// имя токена
+	virtual string getType() {
+		return "T_Numeric";
+	}
+
 	// текстовое представление ноды
-	virtual string Dump() {
+	virtual string dump(map<string,string> options = map<string,string>()) {
 		return this->number;
 	}
 

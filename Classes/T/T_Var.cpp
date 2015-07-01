@@ -1,6 +1,6 @@
 using namespace std;
 
-class T_Varname : public Token {
+class T_Var : public Token {
 
 protected:
 
@@ -11,18 +11,23 @@ protected:
 public:
 
 	// конструктор, на вход приминмаем имя переменной
-	T_Varname(string str, E_Methods* methods) {
+	T_Var(string str, E_Methods* methods) {
 		this->varname = str;
 		this->methods = methods;
 	}
 
 	// виртуальный деструктор
-	virtual ~T_Varname() {
+	virtual ~T_Var() {
 		delete this->methods;
 	}
 
+	// имя токена
+	virtual string getType() {
+		return "T_Var";
+	}
+
 	// текстовое представление ноды
-	virtual string Dump() {
+	virtual string dump(map<string,string> options = map<string,string>()) {
 		string result = Token::LuaInstance->execute("getVariableName", this->varname);
 		if(this->methods->size()) {
 			for(int i=0; i<this->methods->size(); ++i) {
@@ -32,7 +37,7 @@ public:
 				data.push_back(result);
 				if(parameters.size() > 0) {
 					for(int j=0; j<parameters.size(); ++j) {
-						data.push_back(parameters.at(j)->Dump());
+						data.push_back(parameters.at(j)->dump());
 					}
 				}
 				result = Token::LuaInstance->execute("castMethod", data);

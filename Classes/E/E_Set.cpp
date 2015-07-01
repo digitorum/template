@@ -1,4 +1,4 @@
-class T_Set : public Token {
+class E_Set : public Token {
 
 	// список токенов
 	vector<Token*> tokens;
@@ -6,23 +6,28 @@ class T_Set : public Token {
 public:
 
 	// конструктор "(token)"
-	T_Set(Token* var, Token* expr) {
+	E_Set(Token* var, Token* expr) {
 		this->tokens.push_back(var);
 		this->tokens.push_back(expr);
 	}
 
 	// деструктор
-	virtual ~T_Set() {
+	virtual ~E_Set() {
 		this->tokens.clear();
 	}
 
+	// имя токена
+	virtual string getType() {
+		return "E_Set";
+	}
+
 	// текстовое представление ноды
-	string Dump() {
+	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute(
 			"setVariable",
 			map<string,string>() = {
-				{"name", this->tokens.at(0)->Dump()},
-				{"value", this->tokens.at(1)->Dump()}
+				{"name", this->tokens.at(0)->dump()},
+				{"value", this->tokens.at(1)->dump()}
 			}
 		);
 	}
