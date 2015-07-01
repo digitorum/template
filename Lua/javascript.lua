@@ -1,12 +1,26 @@
 -- получить имя константы
-function getConstantName(name)
+function T_Const(name)
 	return "$constants['" .. name .. "']";
 end
 
 
 
+-- получить число
+function T_Numeric(data)
+	return data;
+end
+
+
+
+-- получить текст
+function T_Text(data)
+	return data;
+end
+
+
+
 -- формирование имени переменной
-function getVariableName(name)
+function T_Var(name)
 	return "$" .. name;
 end
 
@@ -45,7 +59,7 @@ end
 
 
 -- объявление переменной
-function setVariable(data)
+function E_Set(data)
 	return "var " .. data.name .. " = " .. data.value .. ";"
 end
 
@@ -74,3 +88,10 @@ function E_Main(data, options)
 	--	return "'" .. table.concat(data, "") .. "'";
 	--end
 end;
+
+
+
+-- получить E_Expr в виде строки
+function E_Expr(data)
+	return table.concat(data, " ");
+end

@@ -24,7 +24,7 @@ public:
 	// текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute(
-			"setVariable",
+			"E_Set",
 			map<string,string>() = {
 				{"name", this->tokens.at(0)->dump()},
 				{"value", this->tokens.at(1)->dump()}

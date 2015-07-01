@@ -28,7 +28,7 @@ public:
 
 	// текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
-		string result = Token::LuaInstance->execute("getVariableName", this->varname);
+		string result = Token::LuaInstance->execute("T_Var", this->varname);
 		if(this->methods->size()) {
 			for(int i=0; i<this->methods->size(); ++i) {
 				vector<string> data = vector<string>();

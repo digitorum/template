@@ -23,7 +23,7 @@ public:
 
 	// текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
-		return this->number;
+		return Token::LuaInstance->execute("T_Numeric", this->number);
 	}
 
 };

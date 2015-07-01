@@ -24,11 +24,6 @@ public:
 		return "T_Text";
 	}
 
-	// вернуть текстовое значение
-	virtual string dump(map<string,string> options = map<string,string>()) {
-		return this->text;
-	}
-
 	// получить raw представление токена
 	virtual string getRaw() {
 		return this->text;
@@ -41,4 +36,8 @@ public:
 		}
 	}
 
+	// вернуть текстовое значение
+	virtual string dump(map<string,string> options = map<string,string>()) {
+		return Token::LuaInstance->execute("T_Text", this->text);
+	}
 };

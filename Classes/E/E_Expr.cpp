@@ -27,15 +27,12 @@ public:
 
 	// текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
-		string result = "";
-		int i = 0;
+		vector<string> dumps;
 
-		for(i=0; i<this->tokens.size(); ++i) {
-			if(result != "") {
-				result += " ";
-			}
-			result += this->tokens.at(i)->dump();
+		// объединяем текстовые ноды
+		for(int i=0; i<this->tokens.size(); ++i) {
+			dumps.push_back(this->tokens.at(i)->dump());
 		}
-		return result;
+		return Token::LuaInstance->execute("E_Expr", dumps);
 	}
 };
