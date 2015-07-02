@@ -80,14 +80,13 @@ end
 
 -- получить E_Main в виде строки
 function E_Main(data, options)
-	return table.concat(data, "")
-	-- todo: complete
-	--if(options["isFinal"] == "true") then
-	--	return " var f = function() { var result = '" .. table.concat(data, "") .. "' return result; } "
-	--else
-	--	return "'" .. table.concat(data, "") .. "'"
-	--end
-end;
+	--return table.concat(data, "")
+	if(options["isFinal"] == "true") then
+		return " var f = function(" .. options["parameters"] .. ") { var result = '" .. table.concat(data, "") .. "' return result; } "
+	else
+		return "'" .. table.concat(data, "") .. "'"
+	end
+end
 
 
 

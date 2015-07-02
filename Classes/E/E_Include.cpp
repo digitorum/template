@@ -33,9 +33,9 @@ public:
 		map<string,string> variables = this->attrs->getVariables();
 		for(map<string,string>::const_iterator i = variables.begin(); i !=variables.end(); ++i) {
 			string val = i->second;
-			boost::replace_all(val, "\\", "\\\\");
-			boost::replace_all(val, "\"", "\\\"");
-			boost::replace_all(val, "$", "\\$");
+			val = string_replace_all(val, "\\", "\\\\");
+			val = string_replace_all(val, "\"", "\\\"");
+			val = string_replace_all(val, "$", "\\$");
 			cmd += " -v " + i->first + "=\"" + val + "\"";
 		}
 		cmd += " < " + this->attrs->get("name");

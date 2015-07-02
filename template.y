@@ -5,7 +5,8 @@
 #include <typeinfo>
 #include <vector>
 #include <map>
-#include <boost/algorithm/string.hpp>
+#include "Lib/String.cpp"
+#include "Lib/Vector.cpp"
 #include "Classes/Token.cpp"
 #include "Classes/E/E_Main.cpp"
 #include "Classes/E/E_Expr.cpp"
@@ -34,6 +35,7 @@ std::vector<E_Methods*> methods;
 std::vector<E_Parameters*> parameters;
 std::vector<E_Attributes*> attibutes;
 std::vector<E_Switch*> switches;
+std::vector<std::string> paramaters;
 
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
@@ -57,6 +59,7 @@ string Token::AppPath = "";
 %token T_INCLUDE_OPEN
 %token T_SWICTH_OPEN T_SWICTH_CLOSE
 %token T_CASE_OPEN T_CASE_CLOSE
+%token T_PARAM_OPEN
 %token T_TAG_CLOSE
 %token T_SBRACKET_OPEN T_SBRACKET_CLOSE T_RBRACKET_OPEN T_RBRACKET_CLOSE
 %token T_AND T_OR T_AS
@@ -77,7 +80,12 @@ E_MAIN:
 																							mains.back()->push($2);
 																						}
 	| E_MAIN T_END																		{
-																							std::cout << mains.back()->dump(map<string,string>() = { {"isFinal", "true"} }) << std::endl;
+																							std::cout << mains.back()->dump(
+																								map<string,string>() = {
+																									{"isFinal", "true"},
+																									{"parameters", paramaters.size() == 0 ? "$input" : vector_join(paramaters, ",")}
+																								}
+																							);
 																							return 0;
 																						}
 	| /* empty */																		{
@@ -116,6 +124,13 @@ E_SCRIPT:
 																							$$ = switches.back();
 																							switches.pop_back();
 																						}
+	| T_PARAM_OPEN E_ATTRIBUTES T_TAG_CLOSE												{
+																							$$ = new T_Text("");
+																							paramaters.push_back(attibutes.back()->get("name"));
+																							delete attibutes.back();
+																							attibutes.pop_back();
+																						}
+
 
 
 E_CASES:

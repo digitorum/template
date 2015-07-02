@@ -31,6 +31,7 @@ extern "C" int yylex();
 %s ATTRIBUTE_VALUE
 %s SET
 %s COMMENT
+%s SETTINGS
 
 WS		[ \t]+
 WSN		[ \t\r\s\n]+
@@ -93,6 +94,10 @@ WSN		[ \t\r\s\n]+
 	\<\/case{WS}*>{WSN}*	{
 								return T_CASE_CLOSE;
 							}
+	\<settings{WS}*>{WSN}*	{
+								states.push(YY_START);
+								BEGIN(SETTINGS);
+							}
 	\n						{
 								yylval.sval = strdup(yytext);
 								return T_TEXT;
@@ -104,6 +109,21 @@ WSN		[ \t\r\s\n]+
 	<<EOF>>					{
 								return T_END;
 							}
+}
+
+
+
+<SETTINGS>{
+
+	\<param{WS}+				{
+									states.push(YY_START);
+									BEGIN(ATTRIBUTES);
+									return T_PARAM_OPEN;
+								}
+	\<\/settings{WS}*>{WSN}*	{
+									BEGIN(states.pop());
+								}
+	.							;
 }
 
 
@@ -305,7 +325,7 @@ WSN		[ \t\r\s\n]+
 
 <VAR,SET>{
 	
-	([a-zA-Z_]+(->)*)+		{
+	([a-zA-Z_0-9]+(->)*)+	{
 								yylval.sval = strdup(yytext);
 								return T_VAR_NAME;
 							}
