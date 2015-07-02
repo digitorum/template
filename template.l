@@ -55,7 +55,7 @@ WSN		[ \t\r\s\n]+
 	\<\/if{WS}*>			{
 								return T_IF_CLOSE;
 							}
-	\<set{WS}+				{
+	\<set{WS}+			{
 								states.push(YY_START);
 								BEGIN(SET);
 								return T_SET_OPEN;
@@ -233,7 +233,7 @@ WSN		[ \t\r\s\n]+
 
 <VAR,SCRIPT,ATTRIBUTES>{
 
-	>{WSN}*					{
+	>						{
 								BEGIN(states.pop());
 								return T_TAG_CLOSE;
 							}
@@ -314,7 +314,7 @@ WSN		[ \t\r\s\n]+
 
 
 
-<SCRIPT,SET>{
+<SCRIPT,SET,PARAMETERS,ATTRIBUTES,SETTINGS>{
 
 	{WSN}+					;
 
@@ -405,7 +405,6 @@ WSN		[ \t\r\s\n]+
 								BEGIN(ATTRIBUTE_VALUE);
 								return T_ASSIGNMENT;
 							}
-	{WS}+					;
 }
 
 

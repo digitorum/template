@@ -1,0 +1,1 @@
+var f = function($input) { var $_template_result = 'B '+((1==1)?(''+((2==2)?('body'):('ebody'))+''):(''))+' A'; return $_template_result; };

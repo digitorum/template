@@ -1,5 +1,0 @@
-B
-<each <var[a]> as <var[k]> <var[v]>>
-	inside each
-</each>
-A

@@ -23,20 +23,11 @@ public:
 
 	// текстовое представление ноды
 	string dump(map<string,string> options = map<string,string>()) {
-		if(this->attrs->get("name") == "") {
-			return "";
-		}
-
 		string result = "";
 		string cmd = Token::AppPath;
 
-		map<string,string> variables = this->attrs->getVariables();
-		for(map<string,string>::const_iterator i = variables.begin(); i !=variables.end(); ++i) {
-			string val = i->second;
-			val = string_replace_all(val, "\\", "\\\\");
-			val = string_replace_all(val, "\"", "\\\"");
-			val = string_replace_all(val, "$", "\\$");
-			cmd += " -v " + i->first + "=\"" + val + "\"";
+		if(this->attrs->get("name") == "") {
+			return "";
 		}
 		cmd += " < " + this->attrs->get("name");
 		char buffer[128];
@@ -50,6 +41,6 @@ public:
 			}
 		}
 		pclose(pipe);
-		return Token::LuaInstance->execute("E_Include", result, variables);
+		return Token::LuaInstance->execute("E_Include", result, this->attrs->getVariables());
 	}
 };

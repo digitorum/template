@@ -1,0 +1,1 @@
+B <each <var[a]> as <var[k]> <var[v]>><print <var[k]>></each> A
