@@ -30,6 +30,7 @@ extern "C" int yylex();
 %s ATTRIBUTES
 %s ATTRIBUTE_VALUE
 %s SET
+%s COMMENT
 
 WS		[ \t]+
 WSN		[ \t\r\s\n]+
@@ -38,6 +39,10 @@ WSN		[ \t\r\s\n]+
 
 <INITIAL,TEXT>{
 
+	\{\{					{
+								states.push(YY_START);
+								BEGIN(COMMENT);
+							}
 	\<if{WS}+				{
 								states.push(YY_START);
 								BEGIN(SCRIPT);
@@ -104,13 +109,28 @@ WSN		[ \t\r\s\n]+
 
 
 
+<COMMENT>{
+
+	\{\{					{
+								states.push(YY_START);
+								BEGIN(COMMENT);
+							}
+	.						;
+	\}\}					{
+								BEGIN(states.pop());
+							}
+}
+
+
+
+
 <NUMERIC>{
 
-	([0-9]+[.]?)+		{
-							BEGIN(states.pop());
-							yylval.sval = strdup(yytext);
-							return T_NUMERIC;
-						}
+	([0-9]+[.]?)+			{
+								BEGIN(states.pop());
+								yylval.sval = strdup(yytext);
+								return T_NUMERIC;
+							}
 }
 
 
@@ -118,71 +138,74 @@ WSN		[ \t\r\s\n]+
 
 <INITIAL,TEXT,SCRIPT,PARAMETERS,ATTRIBUTE_VALUE>{
 
-	\<var				{
-							states.push(YY_START);
-							BEGIN(VAR);
-							return T_VAR_OPEN;
-						}
-	\<const				{
-							states.push(YY_START);
-							BEGIN(VAR);
-							return T_CONST_OPEN;
-						}
+	\<var					{
+								states.push(YY_START);
+								BEGIN(VAR);
+								return T_VAR_OPEN;
+							}
+	\<const					{
+								states.push(YY_START);
+								BEGIN(VAR);
+								return T_CONST_OPEN;
+							}
 }
 
 
 
 
 <SCRIPT,PARAMETERS,ATTRIBUTE_VALUE>{
-	[0-9]				{
-							states.push(YY_START);
-							BEGIN(NUMERIC);
-							yyless(0);
-						}
-	\"					{
-							states.push(YY_START);
-							BEGIN(STRING_DQ);
-							buffer = "\"";
-						}
-	'					{
-							states.push(YY_START);
-							BEGIN(STRING_SQ);
-							buffer = "'";
-						}
+
+	[0-9]					{
+								states.push(YY_START);
+								BEGIN(NUMERIC);
+								yyless(0);
+							}
+	\"						{
+								states.push(YY_START);
+								BEGIN(STRING_DQ);
+								buffer = "\"";
+							}
+	'						{
+								states.push(YY_START);
+								BEGIN(STRING_SQ);
+								buffer = "'";
+							}
 }
 
 
 
 
 <STRING_DQ>{
-	\\\"				{
-							buffer += yytext;
-						}
-	\"					{
-							BEGIN(states.pop());
-							yylval.sval = strdup((buffer + yytext).c_str());
-							return T_STRING;
-						}
-	.					{
-							buffer += yytext;
-						}
+
+	\\\"					{
+								buffer += yytext;
+							}
+	\"						{
+								BEGIN(states.pop());
+								yylval.sval = strdup((buffer + yytext).c_str());
+								return T_STRING;
+							}
+	.						{
+								buffer += yytext;
+							}
 }
 
 
 
 
 <STRING_SQ>{
-	\\'					{
-							buffer += yytext;
-						}
-	'					{
-							BEGIN(states.pop());
-							yylval.sval = strdup((buffer + yytext).c_str());
-							return T_STRING;
-						}
-	.					{
-							buffer += yytext;
-						}
+
+	\\'						{
+								buffer += yytext;
+							}
+	'						{
+								BEGIN(states.pop());
+								yylval.sval = strdup((buffer + yytext).c_str());
+								return T_STRING;
+							}
+	.						{
+								buffer += yytext;
+							}
 }
 
 
@@ -190,10 +213,10 @@ WSN		[ \t\r\s\n]+
 
 <VAR,SCRIPT,ATTRIBUTES>{
 
-	>{WSN}*				{
-							BEGIN(states.pop());
-							return T_TAG_CLOSE;
-						}
+	>{WSN}*					{
+								BEGIN(states.pop());
+								return T_TAG_CLOSE;
+							}
 
 }
 
@@ -202,11 +225,11 @@ WSN		[ \t\r\s\n]+
 
 <METHODS,PARAMETERS,ATTRIBUTE_VALUE>{
 
-	>					{
-							// возвращаемся в "VAR,ATTRIUTE", при этом пересканируем ">" заново
-							BEGIN(states.pop());
-							yyless(0);
-						}
+	>						{
+								// возвращаемся в "VAR,ATTRIUTE", при этом пересканируем ">" заново
+								BEGIN(states.pop());
+								yyless(0);
+							}
 
 }
 
@@ -215,57 +238,57 @@ WSN		[ \t\r\s\n]+
 
 <SCRIPT>{
 	
-	\(					{
-							return T_RBRACKET_OPEN;
-						}
-	\)					{
-							return T_RBRACKET_CLOSE;
-						}
-	&&					{
-							return T_AND;
-						}
-	\|\|				{
-							return T_OR;
-						}
-	(==|eq)				{
-							return T_EQ;
-						}
-	!=					{
-							return T_NOT_EQ;
-						}
-	gt					{
-							return T_GT;
-						}
-	ge					{
-							return T_GE;
-						}
-	lt					{
-							return T_LT;
-						}
-	le					{
-							return T_LE;
-						}
-	as					{
-							return T_AS;
-						}
-	\+					{
-							return T_PLUS;
-						}
-	\-					{
-							return T_MINUS;
-						}
-	\*					{
-							return T_MULTIPLY;
-						}
-	\/					{
-							return T_DIVISION;
-						}
-	\%					{
-							return T_MODULO;
-						}
-	\^					{
-							return T_POW;
-						}
+	\(						{
+								return T_RBRACKET_OPEN;
+							}
+	\)						{
+								return T_RBRACKET_CLOSE;
+							}
+	&&						{
+								return T_AND;
+							}
+	\|\|					{
+								return T_OR;
+							}
+	(==|eq)					{
+								return T_EQ;
+							}
+	!=						{
+								return T_NOT_EQ;
+							}
+	gt						{
+								return T_GT;
+							}
+	ge						{
+								return T_GE;
+							}
+	lt						{
+								return T_LT;
+							}
+	le						{
+								return T_LE;
+							}
+	as						{
+								return T_AS;
+							}
+	\+						{
+								return T_PLUS;
+							}
+	\-						{
+								return T_MINUS;
+							}
+	\*						{
+								return T_MULTIPLY;
+							}
+	\/						{
+								return T_DIVISION;
+							}
+	\%						{
+								return T_MODULO;
+							}
+	\^						{
+								return T_POW;
+							}
 }
 
 
@@ -273,7 +296,7 @@ WSN		[ \t\r\s\n]+
 
 <SCRIPT,SET>{
 
-	{WSN}+				;
+	{WSN}+					;
 
 }
 
@@ -282,21 +305,21 @@ WSN		[ \t\r\s\n]+
 
 <VAR,SET>{
 	
-	([a-zA-Z_]+(->)*)+	{
-							yylval.sval = strdup(yytext);
-							return T_VAR_NAME;
-						}
+	([a-zA-Z_]+(->)*)+		{
+								yylval.sval = strdup(yytext);
+								return T_VAR_NAME;
+							}
 }
 
 
 
 
 <SET>{
-	=					{
-							// SET=SCRIPT, стэк не наполняем, просто изменяем состояние
-							BEGIN(SCRIPT);
-							return T_ASSIGNMENT;
-						}
+	=						{
+								// SET=SCRIPT, стэк не наполняем, просто изменяем состояние
+								BEGIN(SCRIPT);
+								return T_ASSIGNMENT;
+							}
 }
 
 
@@ -304,17 +327,17 @@ WSN		[ \t\r\s\n]+
 
 <VAR>{
 
-	\[					{
-							return T_SBRACKET_OPEN;
-						}
-	\]					{
-							return T_SBRACKET_CLOSE;
-						}
-	\.					{
-							states.push(YY_START);
-							BEGIN(METHODS);
-							yyless(0);
-						}
+	\[						{
+								return T_SBRACKET_OPEN;
+							}
+	\]						{
+								return T_SBRACKET_CLOSE;
+							}
+	\.						{
+								states.push(YY_START);
+								BEGIN(METHODS);
+								yyless(0);
+							}
 }
 
 
@@ -322,18 +345,18 @@ WSN		[ \t\r\s\n]+
 
 <METHODS>{
 
-	\.					{
-							return T_DOT;
-						}
-	\(					{
-							states.push(YY_START);
-							BEGIN(PARAMETERS);
-							return T_RBRACKET_OPEN;
-						}
-	[_a-z0-9]+			{
-							yylval.sval = strdup(yytext);
-							return T_METHOD_NAME;
-						}
+	\.						{
+								return T_DOT;
+							}
+	\(						{
+								states.push(YY_START);
+								BEGIN(PARAMETERS);
+								return T_RBRACKET_OPEN;
+							}
+	[_a-z0-9]+				{
+								yylval.sval = strdup(yytext);
+								return T_METHOD_NAME;
+							}
 }
 
 
@@ -341,40 +364,40 @@ WSN		[ \t\r\s\n]+
 
 <PARAMETERS>{
 
-	\)					{
-							BEGIN(states.pop());
-							return T_RBRACKET_CLOSE;
-						}
-	,					{
-							return T_COMMA;
-						}
+	\)						{
+								BEGIN(states.pop());
+								return T_RBRACKET_CLOSE;
+							}
+	,						{
+								return T_COMMA;
+							}
 }
 
 
 
 <ATTRIBUTES>{
-	[a-z0-9_]+			{
-							yylval.sval = strdup(yytext);
-							return T_ATTR_NAME;
-						}
-	=					{
-							states.push(YY_START);
-							BEGIN(ATTRIBUTE_VALUE);
-							return T_ASSIGNMENT;
-						}
-	{WS}+				;
+	[a-z0-9_]+				{
+								yylval.sval = strdup(yytext);
+								return T_ATTR_NAME;
+							}
+	=						{
+								states.push(YY_START);
+								BEGIN(ATTRIBUTE_VALUE);
+								return T_ASSIGNMENT;
+							}
+	{WS}+					;
 }
 
 
 
 <ATTRIBUTE_VALUE>{
-	{WS}+				{
-							BEGIN(states.pop());
-						}
-	[a-z0-9_]			{
-							// внезапно нашли символ, значит мы подошли вплотную к следующему аттрибуту, нужно пересканировать
-							BEGIN(states.pop());
-							yyless(0);
-						}		
+	{WS}+					{
+								BEGIN(states.pop());
+							}
+	[a-z0-9_]				{
+								// внезапно нашли символ, значит мы подошли вплотную к следующему аттрибуту, нужно пересканировать
+								BEGIN(states.pop());
+								yyless(0);
+							}		
 }
 %%
