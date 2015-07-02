@@ -2,38 +2,37 @@
 
 using namespace std;
 
+// "Базовыый" токен
 class Token {
 
 public:
 
-	// указатель на lua
+	// Указатель на lua
 	static Lua* LuaInstance;
 
-	// путь до приложения
+	// Путь до приложения
 	static string AppPath;
 
-	// конструктор
-	Token() {
-	}
+	// Конструктор
+	Token() { }
 
-	// виртуальный деструктор
-	virtual ~Token() {
-	}
+	// Виртуальный деструктор
+	virtual ~Token() { }
 
-	// имя токена
+	// Имя токена
 	virtual string getType() = 0;
 
-	// получить raw представление токена
+	// Объединить текущий токен с token
 	virtual void mergeWith(Token* token) {
 		throw "Токен не может быть объединен с Token*.";
 	}
 
-	// получить raw представление токена
+	// Получить raw представление токена
 	virtual string getRaw() {
 		throw "Токен не может быть представлен в сыром виде.";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) = 0;
 
 };

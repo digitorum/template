@@ -1,7 +1,9 @@
+using namespace std;
+
 // заменить все вхождения в строке
-std::string string_replace_all(std::string subject, const std::string& search, const std::string& replace) {
+string string_replace_all(string subject, const string& search, const string& replace) {
     size_t pos = 0;
-    while ((pos = subject.find(search, pos)) != std::string::npos) {
+    while ((pos = subject.find(search, pos)) != string::npos) {
          subject.replace(pos, search.length(), replace);
          pos += replace.length();
     }

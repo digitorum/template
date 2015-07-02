@@ -1,30 +1,34 @@
 using namespace std;
 
-
+// Список параметров метода
 class E_Parameters {
 
 protected:
 
+	// Список параметров метода
 	vector<Token*> parameters;
 
 public:
 
-	// конструктор
+	// Конструктор. Инициализируем пустой список
 	E_Parameters() {
 		this->parameters = vector<Token*>();
 	}
 
-	// деструтокр
+	// Деструтокр
 	~E_Parameters() {
+		for(int i=0;i<this->parameters.size(); ++i) {
+			delete this->parameters.at(i);
+		}
 		this->parameters.empty();
 	}
 
-	// добавить параметр
+	// Добавить параметр в список
 	void push(Token* parameter) {
 		this->parameters.push_back(parameter);
 	}
 
-	// текстовое представление
+	// Получить список параметров
 	vector<Token*> get() {
 		return this->parameters;
 	}

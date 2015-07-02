@@ -1,27 +1,33 @@
+using namespace std;
+
+// Оператор set
 class E_Set : public Token {
 
-	// список токенов
+	// Список токенов
 	vector<Token*> tokens;
 
 public:
 
-	// конструктор "(token)"
+	// Конструктор "(token)"
 	E_Set(Token* var, Token* expr) {
 		this->tokens.push_back(var);
 		this->tokens.push_back(expr);
 	}
 
-	// деструктор
+	// Деструктор
 	virtual ~E_Set() {
+		for(int i=0; i<this->tokens.size(); ++i) {
+			delete this->tokens.at(i);
+		}
 		this->tokens.clear();
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "E_Set";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute(
 			"E_Set",

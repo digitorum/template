@@ -1,32 +1,35 @@
 using namespace std;
 
+// Оператор var
 class T_Var : public Token {
 
 protected:
 
-	// имя переменной
+	// Имя переменной
 	string varname;
+
+	// список применяемых методов
 	E_Methods* methods;
 
 public:
 
-	// конструктор, на вход приминмаем имя переменной
+	// Конструктор. На вход принимаем имя переменной и список методов
 	T_Var(string str, E_Methods* methods) {
 		this->varname = str;
 		this->methods = methods;
 	}
 
-	// виртуальный деструктор
+	// Деструктор
 	virtual ~T_Var() {
 		delete this->methods;
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "T_Var";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		string result = Token::LuaInstance->execute("T_Var", this->varname);
 		if(this->methods->size()) {

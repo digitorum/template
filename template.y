@@ -26,17 +26,17 @@
 
 extern "C" int yylex();
 extern "C" int yyparse();
-
 void  yyerror(const char * str);
 
-// списки для отслеживания состояний
-std::vector<E_Main*> mains;
-std::vector<E_Methods*> methods;
-std::vector<E_Parameters*> parameters;
-std::vector<E_Attributes*> attibutes;
-std::vector<E_Switch*> switches;
-std::vector<std::string> paramaters;
+using namespace std;
 
+// списки для отслеживания состояний
+vector<E_Main*> mains;
+vector<E_Methods*> methods;
+vector<E_Parameters*> parameters;
+vector<E_Attributes*> attibutes;
+vector<E_Switch*> switches;
+vector<string> paramaters;
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
 // Путь до приложения
@@ -80,12 +80,14 @@ E_MAIN:
 																							mains.back()->push($2);
 																						}
 	| E_MAIN T_END																		{
-																							std::cout << mains.back()->dump(
+																							cout << mains.back()->dump(
 																								map<string,string>() = {
 																									{"isFinal", "true"},
 																									{"parameters", paramaters.size() == 0 ? "$input" : vector_join(paramaters, ",")}
 																								}
 																							);
+																							delete mains.back();
+																							mains.pop_back();
 																							return 0;
 																						}
 	| /* empty */																		{
@@ -268,10 +270,6 @@ E_PARAMETERS:
 int main(int argc, char* argv[])
 {
 	Token::AppPath = argv[0];
-	
-	//for(int i=1; i<argc; ++i) {
-	//	std::cout << argv[i] << std::endl; 
-	//}
 	yyparse();
 }
 

@@ -1,25 +1,29 @@
+using namespace std;
+
+// Оператор print
 class E_Print : public Token {
 
+	// Expression
 	Token*  expr;
 
 public:
 
-	// конструктор
+	// Конструктор. Expression
 	E_Print(Token* expr) {
 		this->expr = expr;
 	}
 
-	// деструктор
+	// Деструктор
 	virtual ~E_Print() {
 		delete this->expr;
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "E_Print";
 	}
 
-	// текстовое представление ноды
+	// Т>екстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute("E_Print", this->expr->dump());
 	}

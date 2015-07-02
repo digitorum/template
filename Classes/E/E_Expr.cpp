@@ -1,31 +1,34 @@
 using namespace std;
 
-
+// Expression
 class E_Expr : public Token {
 
-	// список токенов
+	// Список токенов
 	vector<Token*> tokens;
 
 public:
 
-	// конструктор "(token)"
+	// Конструктор. "(token)"
 	E_Expr(Token* obracket, Token* token, Token* cbracket) {
 		this->tokens.push_back(obracket);
 		this->tokens.push_back(token);
 		this->tokens.push_back(cbracket);
 	}
 
-	// деструктор
+	// Деструктор
 	virtual ~E_Expr() {
+		for(int i=0; i<this->tokens.size(); ++i) {
+			delete this->tokens.at(i);
+		}
 		this->tokens.clear();
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "E_Expr";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		vector<string> dumps;
 

@@ -1,27 +1,31 @@
 using namespace std;
 
+// оператор include
 class E_Include : public Token {
 
 protected:
 
+	// Список аттрибутов
 	E_Attributes* attrs;
 
 public:
 
+	// Конструтокр. На вход получаем список аттирбутов
 	E_Include(E_Attributes* attrs) {
 		this->attrs = attrs;
 	}
 
+	// Деструктор
 	virtual ~E_Include() {
 		delete this->attrs;
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "E_Include";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	string dump(map<string,string> options = map<string,string>()) {
 		string result = "";
 		string cmd = Token::AppPath;

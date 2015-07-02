@@ -7,14 +7,16 @@ extern "C" {
 
 using namespace std;
 
+// Интерфейс работы с Lua
 class Lua {
 
 protected:
 
+	// указатель на lua_State
 	lua_State* L;
 
 
-	// вызов фуцнкции из lua-файла
+	// Вызов фуцнкции из lua-файла
 	string luaCall() {
 		if (lua_pcall(L, 2, 1, 0)) {
 			this->error(L);
@@ -26,7 +28,7 @@ protected:
 
 public:
 
-	// конструктор
+	// Конструктор
 	Lua() {
 		this->L = luaL_newstate();
 		luaL_openlibs(this->L);
@@ -38,17 +40,19 @@ public:
 		}
 	}
 
-	// деструктор
+	// Деструктор
 	~Lua(){
 		lua_close(this->L);
 	}
 
-	// сообщение об ощибке
+	// Cообщение об ощибке
 	void error(lua_State *L){
 		fprintf(stderr, "\nFATAL ERROR:\n  %s: %s\n\n", lua_tostring(L, -1));
 		exit(1);
 	}
 
+	// Добавить таблиц в стэк из map
+	// TODO: refactor. template?
 	void pushTable(map<string,string> table) {
 		lua_newtable(this->L);
 		for(map<string,string>::const_iterator i = table.begin(); i !=table.end(); ++i) {
@@ -58,6 +62,8 @@ public:
 		}
 	}
 
+	// Добавить таблиц в стэк из vecor
+	// TODO: refactor. template?
 	void pushTable(vector<string> v) {
 		lua_newtable(this->L);
 		for(int i=0; i<v.size(); ++i) {
@@ -67,7 +73,8 @@ public:
 		}
 	}
 
-	// вызов функции из LUA файла
+	// Вызов функции из LUA файла
+	// TODO: refactor. template?
 	string execute(string fname, map<string,string> table, map<string,string> options = map<string,string>()) {
 		lua_getglobal(this->L, fname.c_str());
 		this->pushTable(table);
@@ -76,7 +83,8 @@ public:
 	}
 
 
-	// вызов функции из LUA файла
+	// Вызов функции из LUA файла
+	// TODO: refactor. template?
 	string execute(string fname, vector<string> v, map<string,string> options = map<string,string>()) {
 		lua_getglobal(this->L, fname.c_str());
 		this->pushTable(v);
@@ -85,7 +93,8 @@ public:
 	}
 
 
-	// вызов функции из LUA файла
+	// Вызов функции из LUA файла
+	// TODO: refactor. template?
 	string execute(string fname, string s, map<string,string> options = map<string,string>()) {
 		lua_getglobal(this->L, fname.c_str());
 		lua_pushstring(L, s.c_str());

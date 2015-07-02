@@ -1,27 +1,29 @@
 using namespace std;
 
+// Числовой токен
 class T_Numeric : public Token {
 
+	// Число
 	string number;
 
 public:
 
-	// конструктор, на вход строка
+	// Конструктор
 	T_Numeric(string str) {
 		this->number = str;
 	}
 
-	// виртуальный деструктор
+	// Деструктор
 	virtual ~T_Numeric() {
 
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "T_Numeric";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute("T_Numeric", this->number);
 	}

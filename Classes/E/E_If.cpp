@@ -1,39 +1,46 @@
 using namespace std;
 
+// Оператор if[-else]
 class E_If : public Token {
 
 protected:
 
+	// Expression
 	Token* expr;
+
+	// Statements
 	vector<E_Main*> statements;
 
 public:
 
-	// конструктор, на вход вырвжение и инструкции
+	// Конструктор. if(expression) { statement }
 	E_If(Token* expr, E_Main* statement) {
 		this->expr = expr;
 		this->statements.push_back(statement);
 	}
 
-	// Конструктор if-else
+	// Конструктор. if(expression) { statement } else { elsestatement }
 	E_If(Token* expr, E_Main* statement, E_Main* elsestatement) {
 		this->expr = expr;
 		this->statements.push_back(statement);
 		this->statements.push_back(elsestatement);
 	}
 
-	// деструтокр
+	// Деструтокр
 	virtual ~E_If() {
-		delete this->expr;
+		for(int i=0; i<this->statements.size(); ++i) {
+			delete this->statements.at(i);
+		}
 		this->statements.clear();
+		delete this->expr;
 	}
 
-	// имя токена
+	// Имя токена
 	virtual string getType() {
 		return "E_If";
 	}
 
-	// текстовое представление ноды
+	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		return Token::LuaInstance->execute(
 			"E_If",
