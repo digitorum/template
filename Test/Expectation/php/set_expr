@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '; $a=($b+100)*4; $_template_result .= ' A'; return $_template_result; }; ?>

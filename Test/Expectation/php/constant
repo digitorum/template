@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '.("tempate").' A'; return $_template_result; }; ?>

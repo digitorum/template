@@ -15,6 +15,8 @@ protected:
 	// указатель на lua_State
 	lua_State* L;
 
+	// текщий язык
+	string language;
 
 	// Вызов фуцнкции из lua-файла
 	string luaCall() {
@@ -31,18 +33,31 @@ public:
 	// Конструктор
 	Lua() {
 		this->L = luaL_newstate();
+		this->language = "";
 		luaL_openlibs(this->L);
-		if (luaL_loadfile(this->L, "Lua/javascript.lua")) {
-			this->error(L);
-		}
-		if (lua_pcall(this->L, 0, 0, 0)) {
-			this->error(this->L);
-		}
 	}
 
 	// Деструктор
 	~Lua(){
 		lua_close(this->L);
+	}
+
+	// получить текущий язык
+	string getLaguage() {
+		return this->language;
+	}
+
+	// загрузить необходимый файл
+	void loadLanguageFile(string languague) {
+		string filename = "Lua/" + languague + ".lua";
+
+		this->language = languague;
+		if (luaL_loadfile(this->L, filename.c_str())) {
+			this->error(L);
+		}
+		if (lua_pcall(this->L, 0, 0, 0)) {
+			this->error(this->L);
+		}
 	}
 
 	// Cообщение об ощибке

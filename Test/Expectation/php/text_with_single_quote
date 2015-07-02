@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'A\'B\'C'; return $_template_result; }; ?>

@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '.call_user_func(function() { $f = function($input, $var3, $var1, $var2) { $_template_result = 'BA'; return $_template_result; }; return f("input", $var3, $var1, 10); }).' A'; return $_template_result; }; ?>

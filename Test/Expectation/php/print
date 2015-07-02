@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '.("string"+1/3).' A'; return $_template_result; }; ?>

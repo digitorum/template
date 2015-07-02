@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '.call_user_func(function() { var $_template_each = ''; foreach($a as $k => $v) { $_template_each .= ''.($k).''; } return $_template_each; }).' A'; return $_template_result; }; ?>

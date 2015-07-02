@@ -268,6 +268,7 @@ E_PARAMETERS:
 int main(int argc, char* argv[])
 {
 	Token::AppPath = argv[0];
+	Token::LuaInstance->loadLanguageFile(argv[1]);
 	yyparse();
 }
 

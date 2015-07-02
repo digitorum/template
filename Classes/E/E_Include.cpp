@@ -33,6 +33,7 @@ public:
 		if(this->attrs->get("name") == "") {
 			return "";
 		}
+		cmd += " " + Token::LuaInstance->getLaguage();
 		cmd += " < " + this->attrs->get("name");
 		char buffer[128];
 		FILE* pipe = popen(cmd.c_str(), "r");

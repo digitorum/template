@@ -12,15 +12,15 @@ _G["cg_constants"] = {
 
 -- предопределенные методы
 _G["cg_methods"] = {
-	["ucase"]="ucase",
-	["lcase"]="lcase",
+	["ucase"]="strtoupper",
+	["lcase"]="strtolower",
 	["substr"]="substr"
 }
 
 
 -- объявление переменной
 function E_Set(data)
-	return "'; var " .. data.name .. "=" .. data.value .. "; $_template_result += '"
+	return "'; " .. data.name .. "=" .. data.value .. "; $_template_result .= '"
 end
 
 
@@ -29,13 +29,13 @@ end
 function E_If(data)
 	local result = "";
 	
-	result = "'+((" .. data.expr .. ")?(" .. data.statement .. "):"
+	result = "'.((" .. data.expr .. ")?(" .. data.statement .. "):"
 	if not (data.elsestatement == "") then
 		result = result .. "(" .. data.elsestatement .. ")"
 	else
 		result = result .. "('')"
 	end
-	result = result .. ")+'"
+	result = result .. ").'"
 	return result
 end
 
@@ -46,7 +46,7 @@ function E_Main(data, options)
 	local parameters = helpers.split(options["parameters"], ",")
 	
 	if(options["isFinal"] == "true") then
-		return "var f = function(" .. table.concat(parameters, ", ") .. ") { var $_template_result = '" .. table.concat(data, "") .. "'; return $_template_result; };"
+		return "<?php $f = function(" .. table.concat(parameters, ", ") .. ") { $_template_result = '" .. table.concat(data, "") .. "'; return $_template_result; }; ?>"
 	else
 		return "'" .. table.concat(data, "") .. "'"
 	end
@@ -56,7 +56,7 @@ end
 
 -- получить E_Print в виде строки
 function E_Print(data)
-	return "'+(" .. data .. ")+'"
+	return "'.(" .. data .. ").'"
 end
 
 
@@ -78,21 +78,23 @@ function E_Include(result, variables)
 	for i,line in pairs(args) do
 		table.insert(pass, vars[args[i]])
 	end
-	return "'+(function() { " .. result .. " return f(" .. table.concat(pass, ", ") .. "); })()+'"
+	result = result:gsub("^<%?php ", "")
+	result = result:gsub(" %?>$", "")
+	return "'.call_user_func(function() { " .. result .. " return f(" .. table.concat(pass, ", ") .. "); }).'"
 end
 
 
 
 -- получить E_Each в виде строки
 function E_Each(data)
-	return "'+(function() { var $_template_each = ''; $.each(" .. data["var"] .. ", function(" .. data["k"] .. ", " .. data["v"] .. ") { $_template_each += " .. data["body"] .. "; }); return $_template_each; })()+'"
+	return "'.call_user_func(function() { var $_template_each = ''; foreach(" .. data["var"] .. " as " .. data["k"] .. " => " .. data["v"] .. ") { $_template_each .= " .. data["body"] .. "; } return $_template_each; }).'"
 end;
 
 
 
 -- получить E_Switch в виде строки
 function E_Switch(data)
-	local result = "'+(function() { "
+	local result = "'.call_user_func(function() { "
 	local line
 	local i
 	
@@ -103,7 +105,7 @@ function E_Switch(data)
 			result = result .. data[i]
 		end
 	end
-	return result .. "}; })()+'"
+	return result .. "}; }).'"
 end
 
 

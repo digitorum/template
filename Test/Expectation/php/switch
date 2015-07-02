@@ -1,0 +1,1 @@
+<?php $f = function($input) { $_template_result = 'B '.call_user_func(function() { switch ("a") { case "b": return ('B'); break; case "c": return ('C'); break; }; }).'A'; return $_template_result; }; ?>

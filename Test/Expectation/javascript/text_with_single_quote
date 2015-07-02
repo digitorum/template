@@ -1,0 +1,1 @@
+var f = function($input) { var $_template_result = 'A\'B\'C'; return $_template_result; };
