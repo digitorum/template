@@ -1,3 +1,4 @@
+-- разбить строку по разделителю
 local function split(str, sep)
 	local result = {}
 	local regex = string.format("([^%s]+)", sep)
@@ -156,22 +157,22 @@ end;
 
 -- получить E_Switch в виде строки
 function E_Switch(data)
-	local result = "";
+	local result = "'+(function() { "
 	
 	for i,line in pairs(data) do
 		if (i == 1) then
-			result = result .. "switch (" .. data[i] .. ") "
+			result = result .. "switch (" .. data[i] .. ") { "
 		else
 			result = result .. data[i]
 		end
 	end
-	return result .. " endswitch"
+	return result .. "}; })()+'"
 end
 
 
 
 -- получить E_Case в виде строки
 function E_Case(data)
-	return "case " .. data["expr"] .. ": " .. data["body"] .. " endcase"
+	return "case " .. data["expr"] .. ": return (" .. data["body"] .. "); break; "
 end
 

@@ -1,0 +1,1 @@
+var f = function($input) { var $_template_result = 'B '+(function() { switch ("a") { case "b": return ('B'); break; case "c": return ('C'); break; }; })()+'A'; return $_template_result; };
