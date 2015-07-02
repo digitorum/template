@@ -2,14 +2,30 @@
 local function split(str, sep)
 	local result = {}
 	local regex = string.format("([^%s]+)", sep)
+	local line
+	local i
 	
 	if(str == nill) then
 		return result
 	end
-	for line,_ in str:gmatch(regex) do
-		table.insert(result, line)
+	for i,line in str:gmatch(regex) do
+		table.insert(result, i)
 	end
 	return result
+end
+
+
+
+-- посчитать количество элементов в таблице
+local function ctable(tbl)
+	local cnt = 0
+	local line
+	local i
+	
+	for i,line in pairs(tbl) do
+		cnt = cnt + 1;
+	end
+	return cnt; 
 end
 
 
@@ -43,7 +59,26 @@ end
 
 -- формирование имени переменной
 function T_Var(name)
-	return "$" .. name;
+	local tbl = split(name, "->")
+	local result = ""
+	local line
+	local i
+	
+	if(ctable(tbl) == 1) then
+		return "$" .. tbl[1];
+	end
+	for i,line in pairs(tbl) do
+		if(i == 1) then
+			result = "$" .. line .. "['"
+		else 
+			if(i == 2) then
+				result = result .. line
+			else
+				result = result .. "']['" .. line
+			end
+		end
+	end
+	return result .. "']"
 end
 
 
@@ -65,7 +100,9 @@ end
 
 -- накастать метод(ы) на переменную/константу
 function castMethod(params)
-	local result = "";
+	local result = ""
+	local line
+	local i
 	
 	for i,line in pairs(params) do
 		if i == 1 then
@@ -136,6 +173,8 @@ function E_Include(result, variables)
 	local args = string.match(result, "function%(([^)]+)%)")
 	local pass = { }
 	local vars = {}
+	local line
+	local i
 	
 	args = args:gsub("%s", "")
 	args = split(args, ",");
@@ -158,6 +197,8 @@ end;
 -- получить E_Switch в виде строки
 function E_Switch(data)
 	local result = "'+(function() { "
+	local line
+	local i
 	
 	for i,line in pairs(data) do
 		if (i == 1) then
