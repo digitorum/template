@@ -1,3 +1,5 @@
+#include "E_Cases.cpp"
+
 using namespace std;
 
 // Оператор switch
@@ -6,7 +8,7 @@ class E_Switch : public Token {
 protected:
 
 	// Список case
-	vector<E_Case*> list;
+	E_Cases* list;
 
 	// Expression
 	Token* expr;
@@ -14,22 +16,15 @@ protected:
 public:
 
 	// Конструктор. Инициализация списка case
-	// TODO: refactor. разобраться с определением expr
-	E_Switch() {
-		this->list = vector<E_Case*>();
+	E_Switch(Token* expr, E_Cases* cases) {
+		this->list = cases;
+		this->expr = expr;
 	}
 
 	// Деструктор
 	virtual ~E_Switch() {
-		for(int i=0; i<this->list.size(); ++i) {
-			delete this->list.at(i);
-		}
+		delete this->list;
 		delete this->expr;
-	}
-
-	// Установить expression
-	void setExpr(Token* expr) {
-		this->expr = expr;
 	}
 
 	// Имя токена
@@ -37,18 +32,13 @@ public:
 		return "E_Switch";
 	}
 
-	// Добавить case в список
-	void push(E_Case* ptr) {
-		this->list.push_back(ptr);
-	}
-
 	// Текстовое представление ноды
 	virtual string dump(map<string,string> options = map<string,string>()) {
 		vector<string> list;
 
 		list.push_back(this->expr->dump());
-		for(int i=0; i<this->list.size(); ++i) {
-			list.push_back(this->list[i]->dump());
+		for(int i=0; i<this->list->size(); ++i) {
+			list.push_back(this->list->at(i)->dump());
 		}
 		return Token::LuaInstance->execute("E_Switch", list);
 	}

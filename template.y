@@ -17,7 +17,6 @@
 #include "Classes/E/E_Attributes.cpp"
 #include "Classes/E/E_Include.cpp"
 #include "Classes/E/E_Each.cpp"
-#include "Classes/E/E_Case.cpp"
 #include "Classes/E/E_Switch.cpp"
 #include "Classes/T/T_Text.cpp"
 #include "Classes/T/T_Numeric.cpp"
@@ -35,7 +34,7 @@ vector<E_Main*> mains;
 vector<E_Methods*> methods;
 vector<E_Parameters*> parameters;
 vector<E_Attributes*> attibutes;
-vector<E_Switch*> switches;
+vector<E_Cases*> cases;
 vector<string> paramaters;
 // указатель на Lua
 Lua* Token::LuaInstance = new Lua();
@@ -122,9 +121,8 @@ E_SCRIPT:
 																							mains.pop_back();
 																						}
 	| T_SWICTH_OPEN E_ENTITY T_TAG_CLOSE E_CASES T_SWICTH_CLOSE							{
-																							switches.back()->setExpr($2);
-																							$$ = switches.back();
-																							switches.pop_back();
+																							$$ = new E_Switch($2, cases.back());
+																							cases.pop_back();
 																						}
 	| T_PARAM_OPEN E_ATTRIBUTES T_TAG_CLOSE												{
 																							$$ = new T_Text("");
@@ -137,11 +135,11 @@ E_SCRIPT:
 
 E_CASES:
 	E_CASES T_CASE_OPEN E_EXPR T_TAG_CLOSE E_MAIN T_CASE_CLOSE							{
-																							switches.back()->push(new E_Case($3, mains.back()));
+																							cases.back()->push(new E_Case($3, mains.back()));
 																							mains.pop_back();
 																						}
 	| /* empty */																		{
-																							switches.push_back(new E_Switch());
+																							cases.push_back(new E_Cases());
 																						}
 
 
