@@ -18,6 +18,14 @@ _G["cg_methods"] = {
 }
 
 
+
+-- обработать символ смены строки
+function processNewLines(data)
+	return data:gsub("\n", "\\n");
+end
+
+
+
 -- объявление переменной
 function E_Set(data)
 	return "'; var " .. data.name .. "=" .. data.value .. "; $_template_result += '"

@@ -90,7 +90,7 @@ WSN		[ \t\r\s\n]+
 	\<\/switch{WS}*>{WSN}*		{
 									return T_SWICTH_CLOSE;
 								}
-	\<case{WS}+					{
+	{WSN}*\<case{WS}+			{
 									states.push(YY_START);
 									BEGIN(SCRIPT);
 									return T_CASE_OPEN;

@@ -47,7 +47,7 @@ end
 
 -- получить текст
 function T_Text(data)
-	return data:gsub("'", "\\'")
+	return processNewLines(data):gsub("'", "\\'")
 end
 
 
